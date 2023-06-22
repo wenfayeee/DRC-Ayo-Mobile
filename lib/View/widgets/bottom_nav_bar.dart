@@ -1,33 +1,64 @@
 import 'package:convex_bottom_bar/convex_bottom_bar.dart';
+import 'package:event_management_app/Cubit/bottom_nav_cubit/bottom_nav_cubit.dart';
 import 'package:flutter/material.dart';
-import 'package:go_router/go_router.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 
 class BottomNavBar extends StatefulWidget {
-  String location;
-  BottomNavBar({super.key, required this.child, required this.location});
+  final int currentIndex;
+  final TabController tabController;
+  final ValueChanged<int> onTap;
 
-  final Widget child;
+  const BottomNavBar(
+      {Key? key,
+      required this.currentIndex,
+      required this.onTap,
+      required this.tabController})
+      : super(key: key);
 
   @override
   State<BottomNavBar> createState() => _BottomNavBarState();
 }
 
 class _BottomNavBarState extends State<BottomNavBar> {
-  int currentIndex = 0;
-
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      bottomNavigationBar: ConvexAppBar(
-        style: TabStyle.react,
-        items: const [
-          TabItem(icon: Icons.home, title: 'Home'),
-          TabItem(icon: Icons.edit_calendar_sharp, title: 'Create Event'),
-          TabItem(icon: Icons.person_2_sharp, title: 'Account'),
-        ],
-        backgroundColor: Colors.blueGrey,
-        initialActiveIndex: 0,
-      ),
+    return ConvexAppBar(
+      controller: widget.tabController,
+      style: TabStyle.react,
+      items: const [
+        TabItem(icon: Icons.home, title: 'Home'),
+        TabItem(icon: Icons.edit_calendar_sharp, title: 'Create Event'),
+        TabItem(icon: Icons.person_2_sharp, title: 'Account'),
+      ],
+      backgroundColor: Colors.blueGrey,
+      initialActiveIndex: 0,
+      onTap: widget.onTap,
     );
   }
 }
+  // Widget build(BuildContext context) {
+  //   return BlocBuilder<BottomNavCubit, int>(builder: (context, index) {
+  //     return ConvexAppBar(
+  //       style: TabStyle.react,
+  //       items: const [
+  //         TabItem(
+  //           icon: Icons.home,
+  //           title: 'Home',
+  //         ),
+  //         TabItem(
+  //           icon: Icons.edit_calendar_sharp,
+  //           title: 'Create Event',
+  //         ),
+  //         TabItem(
+  //           icon: Icons.person_2_sharp,
+  //           title: 'Account',
+  //         ),
+  //       ],
+  //       backgroundColor: const Color(0xFF858378),
+  //       initialActiveIndex: index,
+  //       onTap: (int newIndex) {
+  //         context.read<BottomNavCubit>().updateIndex(newIndex, context);
+  //       },
+  //     );
+  //   });
+  // }

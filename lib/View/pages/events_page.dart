@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 
 class EventsPage extends StatefulWidget {
-  const EventsPage({super.key});
+  const EventsPage({Key? key}) : super(key: key);
 
   @override
   State<EventsPage> createState() => _EventsPageState();
@@ -10,11 +10,9 @@ class EventsPage extends StatefulWidget {
 class _EventsPageState extends State<EventsPage> {
   @override
   Widget build(BuildContext context) {
-    return const MaterialApp(
-      home: Scaffold(
-        body: Center(
-          child: Text('Create Events'),
-        ),
+    return Scaffold(
+      body: Center(
+        child: Text('Create Events'),
       ),
     );
   }

@@ -17,6 +17,8 @@ dependencies:
   google_fonts: ^4.0.4
   persistent_bottom_nav_bar: ^5.0.2
   pushable_button: ^0.0.2
+  salomon_bottom_bar: ^3.3.2
+  searchbar_animation: ^0.0.4
 
 dev_dependencies:
   flutter_test:
