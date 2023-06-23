@@ -1,8 +1,9 @@
 import 'package:event_management_app/View/pages/account_page.dart';
+import 'package:event_management_app/View/pages/create_event_page.dart';
 import 'package:event_management_app/View/pages/events_page.dart';
 import 'package:event_management_app/View/pages/home_page.dart';
-import 'package:flutter/material.dart';
 import 'package:event_management_app/View/widgets/bottom_nav_bar.dart';
+import 'package:flutter/material.dart';
 
 class BottomNavPlaceholder extends StatefulWidget {
   const BottomNavPlaceholder({Key? key}) : super(key: key);
@@ -15,10 +16,11 @@ class _BottomNavPlaceholderState extends State<BottomNavPlaceholder>
     with SingleTickerProviderStateMixin {
   int _currentIndex = 0;
   late TabController _tabController;
+
   @override
   void initState() {
     super.initState();
-    _tabController = TabController(length: 3, vsync: this);
+    _tabController = TabController(length: 4, vsync: this);
   }
 
   @override
@@ -41,6 +43,7 @@ class _BottomNavPlaceholderState extends State<BottomNavPlaceholder>
         children: [
           HomePage(),
           EventsPage(),
+          CreateEventPage(),
           AccountPage(),
         ],
       ),

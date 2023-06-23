@@ -19,6 +19,7 @@ dependencies:
   pushable_button: ^0.0.2
   salomon_bottom_bar: ^3.3.2
   searchbar_animation: ^0.0.4
+  switcher_button: ^0.0.4
 
 dev_dependencies:
   flutter_test:
@@ -31,3 +32,8 @@ flutter:
     - assets/
     - assets/animations/
     - assets/images/
+
+fonts:
+  - family: Poppins
+    fonts: 
+      - asset: fonts/Poppins-ExtraLight.ttf

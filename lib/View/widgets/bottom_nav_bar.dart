@@ -26,11 +26,12 @@ class _BottomNavBarState extends State<BottomNavBar> {
       controller: widget.tabController,
       style: TabStyle.react,
       items: const [
-        TabItem(icon: Icons.home, title: 'Home'),
+        TabItem(icon: Icons.home_sharp, title: 'Home'),
+        TabItem(icon: Icons.list_alt_sharp, title: 'Events'),
         TabItem(icon: Icons.edit_calendar_sharp, title: 'Create Event'),
         TabItem(icon: Icons.person_2_sharp, title: 'Account'),
       ],
-      backgroundColor: Colors.blueGrey,
+      backgroundColor: Colors.grey,
       initialActiveIndex: 0,
       onTap: widget.onTap,
     );

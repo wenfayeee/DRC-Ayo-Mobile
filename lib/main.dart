@@ -1,7 +1,8 @@
 import 'package:event_management_app/View/pages/account_page.dart';
 import 'package:event_management_app/View/pages/error_page.dart';
+import 'package:event_management_app/View/pages/create_event_page.dart';
+import 'package:event_management_app/View/widgets/bottom_nav_placeholder.dart';
 import 'package:event_management_app/View/pages/events_page.dart';
-import 'package:event_management_app/View/pages/bottom_nav_placeholder.dart';
 import 'package:event_management_app/View/pages/home_page.dart';
 import 'package:event_management_app/View/pages/signin_page.dart';
 import 'package:event_management_app/View/pages/signup_page.dart';
@@ -36,7 +37,8 @@ class MainApp extends StatelessWidget {
         '/signin': (context) => const SignInPage(),
         '/signup': (context) => const SignUpPage(),
         '/home': (context) => const HomePage(),
-        '/events': (context) => const EventsPage(),
+        '/create': (context) => const CreateEventPage(),
+        'events': (context) => const EventsPage(),
         '/account': (context) => const AccountPage(),
         '/error': (context) => const ErrorPage(),
       },
