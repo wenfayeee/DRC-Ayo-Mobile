@@ -27,13 +27,14 @@ dev_dependencies:
   flutter_lints: ^2.0.0
 
 flutter:
-  uses-material-design: true
   assets:
     - assets/
     - assets/animations/
     - assets/images/
-
-fonts:
-  - family: Poppins
-    fonts: 
-      - asset: fonts/Poppins-ExtraLight.ttf
+    - assets/fonts/
+  fonts:
+    - family: Poppins
+      fonts: 
+        - asset: assets/fonts/Poppins-ExtraLight.ttf
+          weight: 500
+  uses-material-design: true

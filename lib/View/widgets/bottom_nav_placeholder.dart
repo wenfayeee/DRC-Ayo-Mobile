@@ -1,6 +1,5 @@
-import 'package:event_management_app/View/pages/account_page.dart';
+import 'package:event_management_app/View/pages/profile_page.dart';
 import 'package:event_management_app/View/pages/create_event_page.dart';
-import 'package:event_management_app/View/pages/events_page.dart';
 import 'package:event_management_app/View/pages/home_page.dart';
 import 'package:event_management_app/View/widgets/bottom_nav_bar.dart';
 import 'package:flutter/material.dart';
@@ -20,7 +19,7 @@ class _BottomNavPlaceholderState extends State<BottomNavPlaceholder>
   @override
   void initState() {
     super.initState();
-    _tabController = TabController(length: 4, vsync: this);
+    _tabController = TabController(length: 3, vsync: this);
   }
 
   @override
@@ -42,9 +41,8 @@ class _BottomNavPlaceholderState extends State<BottomNavPlaceholder>
         controller: _tabController,
         children: [
           HomePage(),
-          EventsPage(),
           CreateEventPage(),
-          AccountPage(),
+          ProfilePage(),
         ],
       ),
       bottomNavigationBar: BottomNavBar(

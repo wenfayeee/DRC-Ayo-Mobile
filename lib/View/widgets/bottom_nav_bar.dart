@@ -1,7 +1,5 @@
 import 'package:convex_bottom_bar/convex_bottom_bar.dart';
-import 'package:event_management_app/Cubit/bottom_nav_cubit/bottom_nav_cubit.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
 
 class BottomNavBar extends StatefulWidget {
   final int currentIndex;
@@ -27,9 +25,8 @@ class _BottomNavBarState extends State<BottomNavBar> {
       style: TabStyle.react,
       items: const [
         TabItem(icon: Icons.home_sharp, title: 'Home'),
-        TabItem(icon: Icons.list_alt_sharp, title: 'Events'),
         TabItem(icon: Icons.edit_calendar_sharp, title: 'Create Event'),
-        TabItem(icon: Icons.person_2_sharp, title: 'Account'),
+        TabItem(icon: Icons.person_2_sharp, title: 'Profile'),
       ],
       backgroundColor: Colors.grey,
       initialActiveIndex: 0,

@@ -3,7 +3,7 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:pushable_button/pushable_button.dart';
 
 class SplashScreenPage extends StatelessWidget {
-  SplashScreenPage({Key? key}) : super(key: key);
+  const SplashScreenPage({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -46,7 +46,8 @@ class SplashScreenPage extends StatelessWidget {
                 ),
                 const SizedBox(height: 120.0),
                 Padding(
-                  padding: const EdgeInsets.all(16.0),
+                  padding: const EdgeInsets.only(
+                      top: 10.0, bottom: 10.0, left: 50.0, right: 50.0),
                   child: PushableButton(
                     hslColor: HSLColor.fromColor(
                       const Color(0xFFF9E3FF),
@@ -67,10 +68,11 @@ class SplashScreenPage extends StatelessWidget {
                 ),
                 // const SizedBox(height: 5.0),
                 Padding(
-                  padding: const EdgeInsets.all(16.0),
+                  padding: const EdgeInsets.only(
+                      top: 10.0, bottom: 10.0, left: 50.0, right: 50.0),
                   child: PushableButton(
                     hslColor: HSLColor.fromColor(
-                      const Color(0xFFFFEE52),
+                      const Color(0xFFFFF493),
                     ),
                     shadow: const BoxShadow(
                       color: Color(0xFFCDBF45),
