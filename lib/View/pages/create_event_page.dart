@@ -199,6 +199,7 @@ class _CreateEventPageState extends State<CreateEventPage> {
                   padding:
                       const EdgeInsets.only(top: 10.0, left: 30.0, right: 30.0),
                   child: TextFormField(
+                    maxLines: null,
                     controller: _descriptionController,
                     keyboardType: TextInputType.multiline,
                     style: GoogleFonts.poppins(
@@ -229,6 +230,7 @@ class _CreateEventPageState extends State<CreateEventPage> {
                   padding:
                       const EdgeInsets.only(top: 10.0, left: 30.0, right: 30.0),
                   child: TextFormField(
+                    maxLines: null,
                     controller: _senderEmailController,
                     keyboardType: TextInputType.emailAddress,
                     style: GoogleFonts.poppins(
