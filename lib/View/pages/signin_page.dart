@@ -13,11 +13,13 @@ class _SignInPageState extends State<SignInPage> {
   final _emailController = TextEditingController();
   final _passwordController = TextEditingController();
 
+  bool _isObscure = true;
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       extendBodyBehindAppBar: true,
-      backgroundColor: const Color(0xFFF5F6F2),
+      backgroundColor: const Color(0xFFF8F7F2),
       body: SafeArea(
         child: SingleChildScrollView(
           child: Center(
@@ -37,15 +39,15 @@ class _SignInPageState extends State<SignInPage> {
                   'Login',
                   style: GoogleFonts.poppins(
                       fontSize: 22.0,
-                      fontWeight: FontWeight.w500,
-                      color: const Color(0xFFA34EBB)),
+                      fontWeight: FontWeight.w600,
+                      color: const Color(0xFF1E3765)),
                 ),
                 Padding(
                   padding: const EdgeInsets.all(10.0),
                   child: Text(
                     'Login to your account.',
                     style: GoogleFonts.poppins(
-                        color: const Color(0xFF939393),
+                        color: const Color(0xFF888789),
                         fontWeight: FontWeight.w500,
                         fontSize: 14),
                   ),
@@ -74,7 +76,7 @@ class _SignInPageState extends State<SignInPage> {
                         fontFamily: 'Poppins',
                         fontSize: 18.0,
                         fontWeight: FontWeight.w500,
-                        color: Color(0xFFC3C3C3),
+                        color: Color(0xFF888789),
                       ),
                       alignLabelWithHint: true,
                     ),
@@ -86,26 +88,37 @@ class _SignInPageState extends State<SignInPage> {
                       const EdgeInsets.only(top: 10.0, left: 30.0, right: 30.0),
                   child: TextFormField(
                     controller: _passwordController,
-                    obscureText: true,
+                    obscureText: _isObscure,
                     keyboardType: TextInputType.text,
                     style: GoogleFonts.poppins(
                         fontSize: 18.0,
                         fontWeight: FontWeight.w500,
                         color: const Color(0xFF000000)),
-                    decoration: const InputDecoration(
+                    decoration: InputDecoration(
                       filled: true,
-                      fillColor: Color(0xFFFFFFFF),
+                      fillColor: const Color(0xFFFFFFFF),
                       hintText: "Password",
-                      contentPadding: EdgeInsets.all(12.0),
-                      border: OutlineInputBorder(
+                      suffixIcon: GestureDetector(
+                        onTap: () {
+                          setState(() {
+                            _isObscure = !_isObscure;
+                          });
+                        },
+                        child: Icon(
+                          _isObscure ? Icons.visibility : Icons.visibility_off,
+                          color: const Color(0xFFC3C3C3),
+                        ),
+                      ),
+                      contentPadding: const EdgeInsets.all(12.0),
+                      border: const OutlineInputBorder(
                         borderSide: BorderSide(color: Color(0xFFC3C3C3)),
                         borderRadius: BorderRadius.all(Radius.circular(15.0)),
                       ),
-                      hintStyle: TextStyle(
+                      hintStyle: const TextStyle(
                         fontFamily: 'Poppins',
                         fontSize: 18.0,
                         fontWeight: FontWeight.w500,
-                        color: Color(0xFFC3C3C3),
+                        color: Color(0xFF888789),
                       ),
                       alignLabelWithHint: true,
                     ),
@@ -113,28 +126,31 @@ class _SignInPageState extends State<SignInPage> {
                 ),
                 const SizedBox(height: 10.0),
                 Align(
-                  alignment: Alignment.center,
+                  alignment: Alignment.centerRight,
                   child: Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
+                    mainAxisAlignment: MainAxisAlignment.end,
                     children: [
-                      Text(
-                        'Forgot password? ',
-                        style: GoogleFonts.poppins(
-                          fontSize: 12,
-                          fontWeight: FontWeight.w500,
-                          color: const Color(0xFF939393),
-                        ),
-                      ),
+                      // Text(
+                      //   'Forgot password? ',
+                      //   style: GoogleFonts.poppins(
+                      //     fontSize: 12,
+                      //     fontWeight: FontWeight.w500,
+                      //     color: const Color(0xFF939393),
+                      //   ),
+                      // ),
                       InkWell(
                         onTap: () {
                           Navigator.pushNamed(context, '/forgotPwd');
                         },
-                        child: Text(
-                          'Reset now.',
-                          style: GoogleFonts.poppins(
-                            fontSize: 12,
-                            fontWeight: FontWeight.w500,
-                            color: const Color(0xFFA34EBB),
+                        child: Padding(
+                          padding: const EdgeInsets.only(right: 50.0),
+                          child: Text(
+                            'Forgot password?',
+                            style: GoogleFonts.poppins(
+                              fontSize: 12,
+                              fontWeight: FontWeight.w500,
+                              color: const Color(0xFF1E3765),
+                            ),
                           ),
                         ),
                       )
@@ -144,13 +160,13 @@ class _SignInPageState extends State<SignInPage> {
                 const SizedBox(height: 50.0),
                 Padding(
                   padding: const EdgeInsets.only(
-                      top: 10.0, bottom: 10.0, left: 50.0, right: 50.0),
+                      top: 10.0, bottom: 10.0, left: 30.0, right: 30.0),
                   child: PushableButton(
                     hslColor: HSLColor.fromColor(
-                      const Color(0xFFF9E3FF),
+                      const Color(0xFF1E3765),
                     ),
                     shadow: const BoxShadow(
-                      color: Color(0xFFCDBBD2),
+                      color: Color(0xFF1E3765),
                     ),
                     height: 50,
                     elevation: 8,
@@ -158,8 +174,8 @@ class _SignInPageState extends State<SignInPage> {
                       'Login',
                       style: GoogleFonts.poppins(
                         fontSize: 16,
-                        fontWeight: FontWeight.w500,
-                        color: const Color(0xFF939393),
+                        fontWeight: FontWeight.w600,
+                        color: const Color(0xFFF8F7F2),
                       ),
                     ),
                   ),
@@ -183,11 +199,11 @@ class _SignInPageState extends State<SignInPage> {
                           Navigator.pushNamed(context, '/signup');
                         },
                         child: Text(
-                          'Sign up now.',
+                          'Register now.',
                           style: GoogleFonts.poppins(
                             fontSize: 12,
                             fontWeight: FontWeight.w500,
-                            color: const Color(0xFFA34EBB),
+                            color: const Color(0xFF1E3765),
                           ),
                         ),
                       ),

@@ -15,11 +15,14 @@ class _SignUpPageState extends State<SignUpPage> {
   final _newUserPasswordController = TextEditingController();
   final _confirmPasswordController = TextEditingController();
 
+  bool _isObscure = true;
+  bool _confirmIsObscure = true;
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
         extendBodyBehindAppBar: true,
-        backgroundColor: const Color(0xFFF5F6F2),
+        backgroundColor: const Color(0xFFF8F7F2),
         body: SafeArea(
             child: SingleChildScrollView(
           child: Center(
@@ -27,7 +30,7 @@ class _SignUpPageState extends State<SignUpPage> {
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
                 Padding(
-                  padding: const EdgeInsets.only(top: 50.0),
+                  padding: const EdgeInsets.only(top: 30.0),
                   child: Image.asset(
                     'assets/images/logo.png',
                     width: 245.22,
@@ -40,14 +43,14 @@ class _SignUpPageState extends State<SignUpPage> {
                   style: GoogleFonts.poppins(
                       fontSize: 22.0,
                       fontWeight: FontWeight.w500,
-                      color: const Color(0xFFA34EBB)),
+                      color: const Color(0xFF1E3765)),
                 ),
                 Padding(
                   padding: const EdgeInsets.all(10.0),
                   child: Text(
                     "Create an account. It's free.",
                     style: GoogleFonts.poppins(
-                        color: const Color(0xFF939393),
+                        color: const Color(0xFF888789),
                         fontWeight: FontWeight.w500,
                         fontSize: 14),
                   ),
@@ -66,7 +69,7 @@ class _SignUpPageState extends State<SignUpPage> {
                     decoration: const InputDecoration(
                       filled: true,
                       fillColor: Color(0xFFFFFFFF),
-                      hintText: 'Name',
+                      hintText: 'Full Name',
                       contentPadding: EdgeInsets.all(12.0),
                       border: OutlineInputBorder(
                         borderSide: BorderSide(color: Color(0xFFC3C3C3)),
@@ -76,7 +79,7 @@ class _SignUpPageState extends State<SignUpPage> {
                         fontFamily: 'Poppins',
                         fontSize: 18.0,
                         fontWeight: FontWeight.w500,
-                        color: Color(0xFFC3C3C3),
+                        color: Color(0xFF888789),
                       ),
                       alignLabelWithHint: true,
                     ),
@@ -106,7 +109,7 @@ class _SignUpPageState extends State<SignUpPage> {
                         fontFamily: 'Poppins',
                         fontSize: 18.0,
                         fontWeight: FontWeight.w500,
-                        color: Color(0xFFC3C3C3),
+                        color: Color(0xFF888789),
                       ),
                       alignLabelWithHint: true,
                     ),
@@ -117,26 +120,38 @@ class _SignUpPageState extends State<SignUpPage> {
                   padding:
                       const EdgeInsets.only(top: 10.0, left: 30.0, right: 30.0),
                   child: TextFormField(
+                    obscureText: _isObscure,
                     controller: _newUserPasswordController,
                     keyboardType: TextInputType.text,
                     style: GoogleFonts.poppins(
                         fontSize: 18.0,
                         fontWeight: FontWeight.w500,
                         color: const Color(0xFF000000)),
-                    decoration: const InputDecoration(
+                    decoration: InputDecoration(
                       filled: true,
-                      fillColor: Color(0xFFFFFFFF),
+                      fillColor: const Color(0xFFFFFFFF),
                       hintText: 'Password',
-                      contentPadding: EdgeInsets.all(12.0),
-                      border: OutlineInputBorder(
+                      suffixIcon: GestureDetector(
+                        onTap: () {
+                          setState(() {
+                            _isObscure = !_isObscure;
+                          });
+                        },
+                        child: Icon(
+                          _isObscure ? Icons.visibility : Icons.visibility_off,
+                          color: const Color(0xFFC3C3C3),
+                        ),
+                      ),
+                      contentPadding: const EdgeInsets.all(12.0),
+                      border: const OutlineInputBorder(
                         borderSide: BorderSide(color: Color(0xFFC3C3C3)),
                         borderRadius: BorderRadius.all(Radius.circular(15.0)),
                       ),
-                      hintStyle: TextStyle(
+                      hintStyle: const TextStyle(
                         fontFamily: 'Poppins',
                         fontSize: 18.0,
                         fontWeight: FontWeight.w500,
-                        color: Color(0xFFC3C3C3),
+                        color: Color(0xFF888789),
                       ),
                       alignLabelWithHint: true,
                     ),
@@ -148,25 +163,39 @@ class _SignUpPageState extends State<SignUpPage> {
                       const EdgeInsets.only(top: 10.0, left: 30.0, right: 30.0),
                   child: TextFormField(
                     controller: _confirmPasswordController,
+                    obscureText: _confirmIsObscure,
                     keyboardType: TextInputType.text,
                     style: GoogleFonts.poppins(
                         fontSize: 18.0,
                         fontWeight: FontWeight.w500,
                         color: const Color(0xFF000000)),
-                    decoration: const InputDecoration(
+                    decoration: InputDecoration(
                       filled: true,
-                      fillColor: Color(0xFFFFFFFF),
+                      fillColor: const Color(0xFFFFFFFF),
                       hintText: 'Confirm Password',
-                      contentPadding: EdgeInsets.all(12.0),
-                      border: OutlineInputBorder(
+                      suffixIcon: GestureDetector(
+                        onTap: () {
+                          setState(() {
+                            _confirmIsObscure = !_confirmIsObscure;
+                          });
+                        },
+                        child: Icon(
+                          _confirmIsObscure
+                              ? Icons.visibility
+                              : Icons.visibility_off,
+                          color: const Color(0xFFC3C3C3),
+                        ),
+                      ),
+                      contentPadding: const EdgeInsets.all(12.0),
+                      border: const OutlineInputBorder(
                         borderSide: BorderSide(color: Color(0xFFC3C3C3)),
                         borderRadius: BorderRadius.all(Radius.circular(15.0)),
                       ),
-                      hintStyle: TextStyle(
+                      hintStyle: const TextStyle(
                         fontFamily: 'Poppins',
                         fontSize: 18.0,
                         fontWeight: FontWeight.w500,
-                        color: Color(0xFFC3C3C3),
+                        color: Color(0xFF888789),
                       ),
                       alignLabelWithHint: true,
                     ),
@@ -175,21 +204,21 @@ class _SignUpPageState extends State<SignUpPage> {
                 const SizedBox(height: 20.0),
                 Padding(
                   padding: const EdgeInsets.only(
-                      top: 10.0, bottom: 10.0, left: 50.0, right: 50.0),
+                      top: 10.0, bottom: 10.0, left: 30.0, right: 30.0),
                   child: PushableButton(
                     hslColor: HSLColor.fromColor(
-                      const Color(0xFFFFF493),
+                      const Color(0xFF1E3765),
                     ),
                     shadow: const BoxShadow(
-                      color: Color(0xFFCDBF45),
+                      color: Color(0xFF1E3765),
                     ),
                     height: 50,
                     elevation: 8,
                     child: Text(
                       'Sign Up',
                       style: GoogleFonts.poppins(
-                          color: const Color(0xFF939393),
-                          fontWeight: FontWeight.w500,
+                          color: const Color(0xFFF8F7F2),
+                          fontWeight: FontWeight.w600,
                           fontSize: 16),
                     ),
                   ),
@@ -200,7 +229,7 @@ class _SignUpPageState extends State<SignUpPage> {
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
                       Text(
-                        'Already have an account? ',
+                        'Have an account? ',
                         style: GoogleFonts.poppins(
                           fontSize: 12,
                           fontWeight: FontWeight.w500,
@@ -217,7 +246,7 @@ class _SignUpPageState extends State<SignUpPage> {
                           style: GoogleFonts.poppins(
                             fontSize: 12,
                             fontWeight: FontWeight.w500,
-                            color: const Color(0xFFA34EBB),
+                            color: const Color(0xFF1E3765),
                           ),
                         ),
                       ),
