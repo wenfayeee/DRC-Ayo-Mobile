@@ -21,7 +21,10 @@ class _SignInPageState extends State<SignInPage> {
   bool _isLoading = false;
 
   void _loginButtonPressed() {
-    if (_emailValid.value && _passwordValid.value) {
+    if (_emailValid.value &&
+        _passwordValid.value &&
+        _emailController.text.isNotEmpty &&
+        _passwordController.text.isNotEmpty) {
       setState(() {
         _isLoading = true;
       });
@@ -32,6 +35,29 @@ class _SignInPageState extends State<SignInPage> {
         });
         Navigator.of(context).pushNamed('/navigator');
       });
+
+      //To implement "invalid email or password error handling"
+    } else {
+      showDialog(
+        context: context,
+        builder: (context) {
+          return AlertDialog(
+            title: const Text(
+              'Error',
+              style: TextStyle(color: Colors.red, fontWeight: FontWeight.bold),
+            ),
+            content: const Text('Please enter your email and password.'),
+            actions: [
+              TextButton(
+                onPressed: () {
+                  Navigator.pop(context);
+                },
+                child: const Text('OK'),
+              ),
+            ],
+          );
+        },
+      );
     }
   }
 
@@ -151,21 +177,6 @@ class _SignInPageState extends State<SignInPage> {
                           validator: (value) {
                             if (value == null || value.isEmpty) {
                               return 'Please enter your password';
-                            }
-                            if (!value.contains(RegExp(r'[A-Z]'))) {
-                              return 'Password must contain at least \none uppercase letter';
-                            }
-                            if (!value.contains(RegExp(r'[a-z]'))) {
-                              return 'Password must contain at least \none lowercase letter';
-                            }
-                            if (!value.contains(RegExp(r'[0-9]'))) {
-                              return 'Password must contain at least \none numeric digit';
-                            }
-                            if (!value.contains(RegExp(r'[!@#$%^&*]'))) {
-                              return 'Password must contain at least \none special character';
-                            }
-                            if (value.length < 8) {
-                              return 'Password must be at least 8 characters long';
                             }
                             return null;
                           },
