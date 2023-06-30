@@ -59,10 +59,35 @@ class _SignUpPageState extends State<SignUpPage> {
           );
         },
       );
-    } else if (_nameValid.value &&
-        _emailValid.value &&
-        _passwordValid.value &&
-        _confirmPassword.value) {
+    } else if (!_nameValid.value &&
+        !_emailValid.value &&
+        !_passwordValid.value &&
+        !_confirmPassword.value) {
+      showDialog(
+        context: context,
+        builder: (context) {
+          return AlertDialog(
+            title: const Text(
+              'Error',
+              style: TextStyle(color: Colors.red, fontWeight: FontWeight.bold),
+            ),
+            content: const Text('Please enter valid values for all fields.'),
+            actions: [
+              TextButton(
+                onPressed: () {
+                  Navigator.pop(context);
+                },
+                child: const Text('OK'),
+              ),
+            ],
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(16.0),
+            ),
+            elevation: 8.0,
+          );
+        },
+      );
+    } else {
       setState(() {
         _isLoading = true;
       });
@@ -71,7 +96,7 @@ class _SignUpPageState extends State<SignUpPage> {
         setState(() {
           _isLoading = false;
         });
-        Navigator.of(context).pushNamed('/navigator');
+        Navigator.of(context).pushNamed('/signin');
       });
     }
   }
@@ -133,7 +158,7 @@ class _SignUpPageState extends State<SignUpPage> {
                             if (value == null || value.isEmpty) {
                               return 'Please enter your name';
                             }
-                            if (!RegExp(r"^[\p{L} ,.'-]*$").hasMatch(value)) {
+                            if (!RegExp(r"^[a-zA-Z ,.\'-]+$").hasMatch(value)) {
                               return 'Please enter a valid name';
                             }
                             if (value.length < 3) {

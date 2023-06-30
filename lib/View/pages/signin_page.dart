@@ -21,23 +21,10 @@ class _SignInPageState extends State<SignInPage> {
   bool _isLoading = false;
 
   void _loginButtonPressed() {
-    if (_emailValid.value &&
-        _passwordValid.value &&
-        _emailController.text.isNotEmpty &&
-        _passwordController.text.isNotEmpty) {
-      setState(() {
-        _isLoading = true;
-      });
+    final email = _emailController.text.trim();
+    final password = _passwordController.text.trim();
 
-      Future.delayed(const Duration(seconds: 2), () {
-        setState(() {
-          _isLoading = false;
-        });
-        Navigator.of(context).pushNamed('/navigator');
-      });
-
-      //To implement "invalid email or password error handling"
-    } else {
+    if (email.isEmpty || password.isEmpty) {
       showDialog(
         context: context,
         builder: (context) {
@@ -58,6 +45,42 @@ class _SignInPageState extends State<SignInPage> {
           );
         },
       );
+    } else if (!_emailValid.value && !_passwordValid.value) {
+      showDialog(
+          context: context,
+          builder: (context) {
+            return AlertDialog(
+              title: const Text(
+                'Error',
+                style:
+                    TextStyle(color: Colors.red, fontWeight: FontWeight.bold),
+              ),
+              content: const Text('Please enter valid values for all fields.'),
+              actions: [
+                TextButton(
+                  onPressed: () {
+                    Navigator.pop(context);
+                  },
+                  child: const Text('OK'),
+                ),
+              ],
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(16.0),
+              ),
+              elevation: 8.0,
+            );
+          });
+    } else {
+      setState(() {
+        _isLoading = true;
+      });
+
+      Future.delayed(const Duration(seconds: 2), () {
+        setState(() {
+          _isLoading = false;
+        });
+        Navigator.of(context).pushNamed('/navigator');
+      });
     }
   }
 
