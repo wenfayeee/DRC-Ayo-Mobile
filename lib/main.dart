@@ -31,10 +31,10 @@ class MainApp extends StatelessWidget {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
       theme: ThemeData(primarySwatch: Colors.grey, fontFamily: 'Poppins'),
-      // home: const SplashScreenPage(),
-      home: token != null && !JwtDecoder.isExpired(token)
-          ? HomePage(token: token)
-          : const SignInPage(),
+      home: const SignInPage(),
+      // home: token != null && !JwtDecoder.isExpired(token)
+      //     ? HomePage(token: token)
+      //     : const SignInPage(),
       routes: {
         '/splash': (context) => const SplashScreenPage(),
         '/signin': (context) => const SignInPage(),
