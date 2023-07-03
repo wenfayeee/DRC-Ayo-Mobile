@@ -6,12 +6,12 @@ class BottomNavBar extends StatefulWidget {
   final TabController tabController;
   final ValueChanged<int> onTap;
 
-  const BottomNavBar(
-      {Key? key,
-      required this.currentIndex,
-      required this.onTap,
-      required this.tabController})
-      : super(key: key);
+  const BottomNavBar({
+    Key? key,
+    required this.currentIndex,
+    required this.onTap,
+    required this.tabController,
+  }) : super(key: key);
 
   @override
   State<BottomNavBar> createState() => _BottomNavBarState();
@@ -24,16 +24,23 @@ class _BottomNavBarState extends State<BottomNavBar> {
       controller: widget.tabController,
       style: TabStyle.react,
       items: const [
-        TabItem(icon: Icons.home_sharp, title: 'Home'),
-        TabItem(icon: Icons.edit_calendar_sharp, title: 'Create Event'),
-        TabItem(icon: Icons.person_2_sharp, title: 'Profile'),
+        TabItem(
+          icon: Icon(Icons.home_sharp, size: 30, color: Color(0xFFB0C6D4)),
+        ),
+        TabItem(
+          icon: Icon(Icons.add_box, size: 30, color: Color(0xFFB0C6D4)),
+        ),
+        TabItem(
+          icon: Icon(Icons.person_2_sharp, size: 30, color: Color(0xFFB0C6D4)),
+        ),
       ],
-      backgroundColor: Colors.grey,
+      backgroundColor: Color(0xFF202926),
       initialActiveIndex: 0,
       onTap: widget.onTap,
     );
   }
 }
+
   // Widget build(BuildContext context) {
   //   return BlocBuilder<BottomNavCubit, int>(builder: (context, index) {
   //     return ConvexAppBar(

@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:pushable_button/pushable_button.dart';
 import 'package:switcher_button/switcher_button.dart';
+import 'package:flutter_animated_button/flutter_animated_button.dart';
 
 class CreateEventPage extends StatefulWidget {
   const CreateEventPage({Key? key}) : super(key: key);
@@ -30,19 +31,54 @@ class _CreateEventPageState extends State<CreateEventPage> {
         child: SingleChildScrollView(
           child: Center(
             child: Column(
-              mainAxisAlignment: MainAxisAlignment.start,
+              mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                Padding(
-                  padding: const EdgeInsets.only(top: 10.0),
-                  child: Text(
-                    'Create Event',
-                    style: GoogleFonts.poppins(
-                        fontSize: 25.0,
-                        fontWeight: FontWeight.w800,
-                        color: const Color(0xFFA34EBB)),
-                  ),
+                SizedBox(height: 15),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Padding(
+                      padding: const EdgeInsets.only(top: 22.0, left: 25.0),
+                      child: Text(
+                        "Create Event",
+                        overflow: TextOverflow.ellipsis,
+                        textAlign: TextAlign.left,
+                        style: GoogleFonts.poppins(
+                          fontSize: 28.0,
+                          fontWeight: FontWeight.w800,
+                          color: const Color(0xFF6B5F4A),
+                        ),
+                      ),
+                    ),
+                    Padding(
+                      // Add Padding widget to adjust the position of the button
+                      padding: const EdgeInsets.only(
+                          top: 22.0, right: 25.0, bottom: 2.0, left: 10.0),
+                      child: AnimatedButton(
+                        height: 50,
+                        width: 100,
+                        text: 'Create',
+                        isReverse: true,
+                        selectedTextColor: Color.fromARGB(255, 255, 255, 255),
+                        transitionType: TransitionType.LEFT_TO_RIGHT,
+                        backgroundColor: Color(0xFFB3AE99),
+                        selectedBackgroundColor: Color(0xFF6B5F4A),
+                        borderColor: Colors.white,
+                        borderRadius: 50,
+                        borderWidth: 2,
+                        textStyle: GoogleFonts.poppins(
+                          fontSize: 16.0,
+                          fontWeight: FontWeight.w600,
+                          color: Colors.white,
+                        ),
+                        onPress: () {
+                          print("Event Created");
+                        },
+                      ),
+                    ),
+                  ],
                 ),
-                const SizedBox(height: 10.0),
+                const SizedBox(height: 20.0),
                 Padding(
                   padding:
                       const EdgeInsets.only(top: 10.0, left: 30.0, right: 30.0),
@@ -240,7 +276,7 @@ class _CreateEventPageState extends State<CreateEventPage> {
                     decoration: const InputDecoration(
                       filled: true,
                       fillColor: Color(0xFFFFFFFF),
-                      hintText: "Sender's Email",
+                      hintText: "Invitee's Email",
                       contentPadding: EdgeInsets.all(12.0),
                       border: OutlineInputBorder(
                         borderSide: BorderSide(color: Color(0xFFC3C3C3)),
@@ -287,23 +323,6 @@ class _CreateEventPageState extends State<CreateEventPage> {
                 // const SizedBox(height: 5.0),
                 Padding(
                   padding: const EdgeInsets.all(16.0),
-                  child: PushableButton(
-                    hslColor: HSLColor.fromColor(
-                      const Color(0xFFF8DBE0),
-                    ),
-                    shadow: const BoxShadow(
-                      color: Color(0xFFF2A9B6),
-                    ),
-                    height: 50,
-                    elevation: 8,
-                    child: Text(
-                      'Create Event',
-                      style: GoogleFonts.poppins(
-                          color: const Color(0xFF939393),
-                          fontWeight: FontWeight.w500,
-                          fontSize: 16),
-                    ),
-                  ),
                 ),
               ],
             ),
