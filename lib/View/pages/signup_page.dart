@@ -1,5 +1,10 @@
+import 'dart:convert';
+import 'package:event_management_app/Functions/config.dart';
+import 'package:event_management_app/View/pages/signin_page.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:http/http.dart' as http;
+import 'package:jwt_decoder/jwt_decoder.dart';
 import 'package:pushable_button/pushable_button.dart';
 
 class SignUpPage extends StatefulWidget {
@@ -24,6 +29,68 @@ class _SignUpPageState extends State<SignUpPage> {
   bool _isObscure = true;
   bool _confirmIsObscure = true;
   bool _isLoading = false;
+  bool _isNotValidate = false;
+
+  // void registerUser() async {
+  //   if (_newUserEmailController.text.isNotEmpty &&
+  //       _newUserPasswordController.text.isNotEmpty) {
+  //     var regBody = {
+  //       "email": _newUserEmailController.text,
+  //       "password": _newUserPasswordController.text
+  //     };
+
+  //     var response = await http.post(Uri.parse(register),
+  //         // headers: {"Content-Type": "application/json"},
+  //         body: jsonEncode(regBody));
+
+  //     var jsonResponse = await jsonDecode(response.body);
+  //     print(jsonResponse['status']);
+
+  //     if (jsonResponse['status']) {
+  //       Navigator.push(
+  //           context, MaterialPageRoute(builder: (context) => SignInPage()));
+  //     } else {
+  //       print("Something went wrong.");
+  //     }
+  //   } else {
+  //     setState(() {
+  //       _isNotValidate = true;
+  //     });
+  //   }
+  // }
+
+  void registerUser() async {
+    if (_newUserEmailController.text.isNotEmpty &&
+        _newUserPasswordController.text.isNotEmpty) {
+      var regBody = {
+        "email": _newUserEmailController.text,
+        "password": _newUserPasswordController.text
+      };
+
+      var response = await http.post(
+        Uri.parse(register),
+        headers: {
+          "Content-Type": "application/json; charset=utf-8",
+        },
+        body: jsonEncode(regBody),
+      );
+
+      print(response.body);
+      var jsonResponse = await jsonDecode(response.body);
+      print(jsonResponse['status']);
+
+      if (jsonResponse['status']) {
+        Navigator.push(
+            context, MaterialPageRoute(builder: (context) => SignInPage()));
+      } else {
+        print("Something went wrong.");
+      }
+    } else {
+      setState(() {
+        _isNotValidate = true;
+      });
+    }
+  }
 
   void _signUpButtonPressed() {
     final name = _newUserNameController.text.trim();
@@ -392,7 +459,8 @@ class _SignUpPageState extends State<SignUpPage> {
                     padding: const EdgeInsets.only(
                         top: 10.0, bottom: 10.0, left: 30.0, right: 30.0),
                     child: PushableButton(
-                      onPressed: _isLoading ? null : _signUpButtonPressed,
+                      // onPressed: _isLoading ? null : _signUpButtonPressed,
+                      onPressed: () => registerUser(),
                       hslColor: HSLColor.fromColor(
                         const Color(0xFF1E3765),
                       ),

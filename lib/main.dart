@@ -1,45 +1,49 @@
-import 'package:event_management_app/View/pages/account_page.dart';
+import 'package:event_management_app/View/pages/profile_page.dart';
 import 'package:event_management_app/View/pages/error_page.dart';
 import 'package:event_management_app/View/pages/create_event_page.dart';
-import 'package:event_management_app/View/widgets/bottom_nav_placeholder.dart';
-import 'package:event_management_app/View/pages/events_page.dart';
+import 'package:event_management_app/View/pages/reset_password_page.dart';
 import 'package:event_management_app/View/pages/home_page.dart';
 import 'package:event_management_app/View/pages/signin_page.dart';
 import 'package:event_management_app/View/pages/signup_page.dart';
 import 'package:event_management_app/View/pages/splashscreen.dart';
+import 'package:event_management_app/View/widgets/bottom_nav_placeholder.dart';
 import 'package:flutter/material.dart';
+import 'package:jwt_decoder/jwt_decoder.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
-void main() {
-  runApp(const MainApp());
+void main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+  SharedPreferences prefs = await SharedPreferences.getInstance();
+  runApp(MainApp(
+    token: prefs.getString('token'),
+  ));
 }
 
 class MainApp extends StatelessWidget {
-  const MainApp({Key? key}) : super(key: key);
+  final token;
+  const MainApp({
+    @required this.token,
+    Key? key,
+  }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
-    // return BlocProvider(
-    //   create: (context) => BottomNavCubit(0),
-    //   child: MaterialApp(
-    //     debugShowCheckedModeBanner: false,
-    //     theme: ThemeData(
-    //       primarySwatch: Colors.grey,
-    //     ),
-    //     home: Scaffold(
-    //       body: HomePage(),
-    //     ),
     return MaterialApp(
       debugShowCheckedModeBanner: false,
-      theme: ThemeData(primarySwatch: Colors.grey),
-      home: const BottomNavPlaceholder(),
+      theme: ThemeData(primarySwatch: Colors.grey, fontFamily: 'Poppins'),
+      // home: const SplashScreenPage(),
+      home: token != null && !JwtDecoder.isExpired(token)
+          ? HomePage(token: token)
+          : const SignInPage(),
       routes: {
-        '/splash': (context) => SplashScreenPage(),
+        '/splash': (context) => const SplashScreenPage(),
         '/signin': (context) => const SignInPage(),
         '/signup': (context) => const SignUpPage(),
-        '/home': (context) => const HomePage(),
+        '/home': (context) => HomePage(token: token),
         '/create': (context) => const CreateEventPage(),
-        'events': (context) => const EventsPage(),
-        '/account': (context) => const AccountPage(),
+        '/profile': (context) => const ProfilePage(),
+        '/forgotPwd': (context) => const ForgotPwdPage(),
+        '/navigator': (context) => BottomNavPlaceholder(token: token),
         '/error': (context) => const ErrorPage(),
       },
     );

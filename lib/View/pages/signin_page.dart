@@ -1,5 +1,10 @@
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
+import 'package:event_management_app/Functions/config.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:http/http.dart' as http;
+import 'package:jwt_decoder/jwt_decoder.dart';
 import 'package:pushable_button/pushable_button.dart';
 
 class SignInPage extends StatefulWidget {
@@ -19,70 +24,95 @@ class _SignInPageState extends State<SignInPage> {
 
   bool _isObscure = true;
   bool _isLoading = false;
+  bool _isNotValidate = false;
 
-  void _loginButtonPressed() {
-    final email = _emailController.text.trim();
-    final password = _passwordController.text.trim();
+  void loginUser() async {
+    if (_emailController.text.isNotEmpty &&
+        _passwordController.text.isNotEmpty) {
+      var reqBody = {
+        "email": _emailController.text,
+        "password": _passwordController.text
+      };
 
-    if (email.isEmpty || password.isEmpty) {
-      showDialog(
-        context: context,
-        builder: (context) {
-          return AlertDialog(
-            title: const Text(
-              'Error',
-              style: TextStyle(color: Colors.red, fontWeight: FontWeight.bold),
-            ),
-            content: const Text('Please enter your email and password.'),
-            actions: [
-              TextButton(
-                onPressed: () {
-                  Navigator.pop(context);
-                },
-                child: const Text('OK'),
-              ),
-            ],
-          );
+      var response = await http.post(
+        Uri.parse(login),
+        headers: {
+          "Content-Type": "application/json; charset=utf-8",
         },
+        body: jsonEncode(reqBody),
       );
-    } else if (!_emailValid.value && !_passwordValid.value) {
-      showDialog(
-          context: context,
-          builder: (context) {
-            return AlertDialog(
-              title: const Text(
-                'Error',
-                style:
-                    TextStyle(color: Colors.red, fontWeight: FontWeight.bold),
-              ),
-              content: const Text('Please enter valid values for all fields.'),
-              actions: [
-                TextButton(
-                  onPressed: () {
-                    Navigator.pop(context);
-                  },
-                  child: const Text('OK'),
-                ),
-              ],
-              shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(16.0),
-              ),
-              elevation: 8.0,
-            );
-          });
-    } else {
-      setState(() {
-        _isLoading = true;
-      });
 
-      Future.delayed(const Duration(seconds: 2), () {
-        setState(() {
-          _isLoading = false;
-        });
-        Navigator.of(context).pushNamed('/navigator');
-      });
+      var jsonResponse = jsonDecode(response.body);
+      if (jsonResponse['status(200)']) {
+      } else {
+        print('Something went wrong');
+      }
     }
   }
+
+  // void loginButtonPressed() {
+  //   final email = _emailController.text.trim();
+  //   final password = _passwordController.text.trim();
+
+  //   if (email.isEmpty || password.isEmpty) {
+  //     showDialog(
+  //       context: context,
+  //       builder: (context) {
+  //         return AlertDialog(
+  //           title: const Text(
+  //             'Error',
+  //             style: TextStyle(color: Colors.red, fontWeight: FontWeight.bold),
+  //           ),
+  //           content: const Text('Please enter your email and password.'),
+  //           actions: [
+  //             TextButton(
+  //               onPressed: () {
+  //                 Navigator.pop(context);
+  //               },
+  //               child: const Text('OK'),
+  //             ),
+  //           ],
+  //         );
+  //       },
+  //     );
+  //   } else if (!_emailValid.value && !_passwordValid.value) {
+  //     showDialog(
+  //         context: context,
+  //         builder: (context) {
+  //           return AlertDialog(
+  //             title: const Text(
+  //               'Error',
+  //               style:
+  //                   TextStyle(color: Colors.red, fontWeight: FontWeight.bold),
+  //             ),
+  //             content: const Text('Please enter valid values for all fields.'),
+  //             actions: [
+  //               TextButton(
+  //                 onPressed: () {
+  //                   Navigator.pop(context);
+  //                 },
+  //                 child: const Text('OK'),
+  //               ),
+  //             ],
+  //             shape: RoundedRectangleBorder(
+  //               borderRadius: BorderRadius.circular(16.0),
+  //             ),
+  //             elevation: 8.0,
+  //           );
+  //         });
+  //   } else {
+  //     setState(() {
+  //       _isLoading = true;
+  //     });
+
+  //     Future.delayed(const Duration(seconds: 2), () {
+  //       setState(() {
+  //         _isLoading = false;
+  //       });
+  //       Navigator.of(context).pushNamed('/navigator');
+  //     });
+  //   }
+  // }
 
   @override
   Widget build(BuildContext context) {
@@ -280,7 +310,8 @@ class _SignInPageState extends State<SignInPage> {
                       right: 30.0,
                     ),
                     child: PushableButton(
-                      onPressed: _isLoading ? null : _loginButtonPressed,
+                      // onPressed: _isLoading ? null : _loginButtonPressed,
+                      onPressed: loginUser,
                       hslColor: HSLColor.fromColor(
                         const Color(0xFF1E3765),
                       ),
