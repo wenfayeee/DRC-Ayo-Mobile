@@ -3,7 +3,7 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:pushable_button/pushable_button.dart';
 
 class SplashScreenPage extends StatelessWidget {
-  const SplashScreenPage({Key? key}) : super(key: key);
+  SplashScreenPage({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -13,7 +13,7 @@ class SplashScreenPage extends StatelessWidget {
         decoration: const BoxDecoration(
           gradient: LinearGradient(
             colors: [
-              Color(0xFFF8F7F2),
+              Color(0xFFFFFFFF),
               Color(0xFFFFFCF9),
             ],
             begin: Alignment.topCenter,
@@ -39,57 +39,49 @@ class SplashScreenPage extends StatelessWidget {
                 Text(
                   'Event management made easy.',
                   style: GoogleFonts.poppins(
-                      color: const Color(0xFF1E3765),
+                      color: const Color(0xFFFFBA08),
                       fontWeight: FontWeight.w600,
                       fontStyle: FontStyle.italic,
                       fontSize: 16),
                 ),
                 const SizedBox(height: 120.0),
                 Padding(
-                  padding:
-                      const EdgeInsets.only(top: 10.0, left: 30.0, right: 30.0),
+                  padding: const EdgeInsets.all(16.0),
                   child: PushableButton(
-                    onPressed: () {
-                      Navigator.pushNamed(context, '/signin');
-                    },
                     hslColor: HSLColor.fromColor(
-                      const Color(0xFF1E3765),
+                      const Color(0xFFF9E3FF),
                     ),
                     shadow: const BoxShadow(
-                      color: Color(0xFF1E3765),
+                      color: Color(0xFFCDBBD2),
                     ),
                     height: 50,
                     elevation: 8,
                     child: Text(
                       'Login',
                       style: GoogleFonts.poppins(
-                          color: const Color(0xFFF8F7F2),
-                          fontWeight: FontWeight.w600,
+                          color: const Color(0xFF939393),
+                          fontWeight: FontWeight.w500,
                           fontSize: 16),
                     ),
                   ),
                 ),
-                const SizedBox(height: 5.0),
+                // const SizedBox(height: 5.0),
                 Padding(
-                  padding:
-                      const EdgeInsets.only(top: 10.0, left: 30.0, right: 30.0),
+                  padding: const EdgeInsets.all(16.0),
                   child: PushableButton(
-                    onPressed: () {
-                      Navigator.pushNamed(context, '/signup');
-                    },
                     hslColor: HSLColor.fromColor(
-                      const Color(0xFFB0C6D4),
+                      const Color(0xFFFFEE52),
                     ),
                     shadow: const BoxShadow(
-                      color: Color(0xFFB0C6D4),
+                      color: Color(0xFFCDBF45),
                     ),
                     height: 50,
                     elevation: 8,
                     child: Text(
                       'Sign Up',
                       style: GoogleFonts.poppins(
-                          color: const Color(0xFFF8F9FC),
-                          fontWeight: FontWeight.w600,
+                          color: const Color(0xFF939393),
+                          fontWeight: FontWeight.w500,
                           fontSize: 16),
                     ),
                   ),
