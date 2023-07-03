@@ -37,7 +37,7 @@ class _SignInPageState extends State<SignInPage> {
       var response = await http.post(
         Uri.parse(login),
         headers: {
-          "Content-Type": "application/json; charset=utf-8",
+          "Content-Type": "application/json",
         },
         body: jsonEncode(reqBody),
       );
