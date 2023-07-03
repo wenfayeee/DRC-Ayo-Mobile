@@ -20,6 +20,9 @@ dependencies:
   salomon_bottom_bar: ^3.3.2
   searchbar_animation: ^0.0.4
   switcher_button: ^0.0.4
+  fk_toggle: ^0.1.1
+  flutter_animated_button: ^2.0.3
+
 
 dev_dependencies:
   flutter_test:
