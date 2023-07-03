@@ -43,3 +43,7 @@ app.*.map.json
 /android/app/debug
 /android/app/profile
 /android/app/release
+
+lib/Cubit/bottom_nav_cubit/
+lib/Routes/app_router.dart
+lib/View/pages/signin_validation.dart
