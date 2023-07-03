@@ -6,6 +6,7 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:http/http.dart' as http;
 import 'package:jwt_decoder/jwt_decoder.dart';
 import 'package:pushable_button/pushable_button.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class SignInPage extends StatefulWidget {
   const SignInPage({Key? key}) : super(key: key);
@@ -33,19 +34,35 @@ class _SignInPageState extends State<SignInPage> {
         "email": _emailController.text,
         "password": _passwordController.text
       };
+      try {
+        var response = await http.post(
+          Uri.parse(login),
+          headers: {
+            "Content-Type": "application/json; charset=utf-8",
+          },
+          body: jsonEncode(reqBody),
+        );
+        var jsonResponse = jsonDecode(response.body) as Map<String, dynamic>;
+        var statusCode = jsonResponse['statusCode'] as int?;
 
-      var response = await http.post(
-        Uri.parse(login),
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: jsonEncode(reqBody),
-      );
-
-      var jsonResponse = jsonDecode(response.body);
-      if (jsonResponse['status(200)']) {
-      } else {
-        print('Something went wrong');
+        if (response.statusCode == 200) {
+          // Successful authentication
+          var token = jsonResponse['token'] as String?;
+          // Store token locally
+          SharedPreferences prefs = await SharedPreferences.getInstance();
+          await prefs.setString('token', token!);
+          Navigator.pushNamed(context, '/navigator');
+        } else if (response.statusCode == 401) {
+          // Invalid password
+          print('Invalid password');
+        } else if (response.statusCode == 404) {
+          // User not found
+          print('User not found');
+        } else {
+          print('Something went wrong');
+        }
+      } catch (error) {
+        print('Error: $error');
       }
     }
   }
@@ -311,7 +328,7 @@ class _SignInPageState extends State<SignInPage> {
                     ),
                     child: PushableButton(
                       // onPressed: _isLoading ? null : _loginButtonPressed,
-                      onPressed: loginUser,
+                      onPressed: () => loginUser(),
                       hslColor: HSLColor.fromColor(
                         const Color(0xFF1E3765),
                       ),

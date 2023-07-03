@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'dart:async';
 import 'package:event_management_app/Functions/config.dart';
 import 'package:event_management_app/View/pages/signin_page.dart';
 import 'package:flutter/material.dart';
@@ -31,142 +32,123 @@ class _SignUpPageState extends State<SignUpPage> {
   bool _isLoading = false;
   bool _isNotValidate = false;
 
-  // void registerUser() async {
-  //   if (_newUserEmailController.text.isNotEmpty &&
-  //       _newUserPasswordController.text.isNotEmpty) {
-  //     var regBody = {
-  //       "email": _newUserEmailController.text,
-  //       "password": _newUserPasswordController.text
-  //     };
-
-  //     var response = await http.post(Uri.parse(register),
-  //         // headers: {"Content-Type": "application/json"},
-  //         body: jsonEncode(regBody));
-
-  //     var jsonResponse = await jsonDecode(response.body);
-  //     print(jsonResponse['status']);
-
-  //     if (jsonResponse['status']) {
-  //       Navigator.push(
-  //           context, MaterialPageRoute(builder: (context) => SignInPage()));
-  //     } else {
-  //       print("Something went wrong.");
-  //     }
-  //   } else {
-  //     setState(() {
-  //       _isNotValidate = true;
-  //     });
-  //   }
-  // }
-
-  void registerUser() async {
-    if (_newUserEmailController.text.isNotEmpty &&
-        _newUserPasswordController.text.isNotEmpty) {
+  void registerUser(BuildContext context) async {
+    print("anas is crazy");
+    if (_formKey.currentState?.validate() ?? false) {
       var regBody = {
+        "name": _newUserNameController.text,
         "email": _newUserEmailController.text,
         "password": _newUserPasswordController.text
       };
 
-      var response = await http.post(
-        Uri.parse(register),
-        headers: {
-          "Content-Type": "application/json; charset=utf-8",
-        },
-        body: jsonEncode(regBody),
-      );
+      try {
+        var response = await http.post(
+          Uri.parse(register),
+          headers: {
+            "Content-Type": "application/json; charset=utf-8",
+          },
+          body: jsonEncode(regBody),
+        );
 
-      print(response.body);
-      var jsonResponse = await jsonDecode(response.body);
-      print(jsonResponse['status']);
+        var jsonResponse =
+            await jsonDecode(response.body) as Map<String, dynamic>;
+        print("after json response");
+        // var statusCode = jsonResponse['statusCode'] as int?;
+        print("after status code");
 
-      if (jsonResponse['status']) {
-        Navigator.push(
-            context, MaterialPageRoute(builder: (context) => SignInPage()));
-      } else {
-        print("Something went wrong.");
-      }
-    } else {
-      setState(() {
-        _isNotValidate = true;
-      });
-    }
-  }
-
-  void _signUpButtonPressed() {
-    final name = _newUserNameController.text.trim();
-    final email = _newUserEmailController.text.trim();
-    final password = _newUserPasswordController.text.trim();
-    final confirmPassword = _confirmPasswordController.text.trim();
-
-    if (name.isEmpty ||
-        email.isEmpty ||
-        password.isEmpty ||
-        confirmPassword.isEmpty) {
-      showDialog(
-        context: context,
-        builder: (context) {
-          return AlertDialog(
-            title: const Text(
-              'Error',
-              style: TextStyle(color: Colors.red, fontWeight: FontWeight.bold),
-            ),
-            content: const Text('Please fill in all the required fields.'),
-            actions: [
-              TextButton(
-                onPressed: () {
-                  Navigator.pop(context);
-                },
-                child: const Text('OK'),
-              ),
-            ],
-            shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(16.0),
-            ),
-            elevation: 8.0,
-          );
-        },
-      );
-    } else if (!_nameValid.value &&
-        !_emailValid.value &&
-        !_passwordValid.value &&
-        !_confirmPassword.value) {
-      showDialog(
-        context: context,
-        builder: (context) {
-          return AlertDialog(
-            title: const Text(
-              'Error',
-              style: TextStyle(color: Colors.red, fontWeight: FontWeight.bold),
-            ),
-            content: const Text('Please enter valid values for all fields.'),
-            actions: [
-              TextButton(
-                onPressed: () {
-                  Navigator.pop(context);
-                },
-                child: const Text('OK'),
-              ),
-            ],
-            shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(16.0),
-            ),
-            elevation: 8.0,
-          );
-        },
-      );
-    } else {
-      setState(() {
-        _isLoading = true;
-      });
-
-      Future.delayed(const Duration(seconds: 2), () {
+        if (response.statusCode == 201) {
+          Navigator.pushNamed(context, '/signin');
+        } else if (response.statusCode == 409) {
+          print('Email already exist.');
+        } else {
+          setState(() {
+            _isNotValidate = true;
+          });
+        }
+      } catch (error) {
+        print('Error: $error');
+      } finally {
         setState(() {
           _isLoading = false;
         });
-        Navigator.of(context).pushNamed('/signin');
-      });
+      }
     }
   }
+  // void _signUpButtonPressed() {
+  //   final name = _newUserNameController.text.trim();
+  //   final email = _newUserEmailController.text.trim();
+  //   final password = _newUserPasswordController.text.trim();
+  //   final confirmPassword = _confirmPasswordController.text.trim();
+
+  //   if (name.isEmpty ||
+  //       email.isEmpty ||
+  //       password.isEmpty ||
+  //       confirmPassword.isEmpty) {
+  //     showDialog(
+  //       context: context,
+  //       builder: (context) {
+  //         return AlertDialog(
+  //           title: const Text(
+  //             'Error',
+  //             style: TextStyle(color: Colors.red, fontWeight: FontWeight.bold),
+  //           ),
+  //           content: const Text('Please fill in all the required fields.'),
+  //           actions: [
+  //             TextButton(
+  //               onPressed: () {
+  //                 Navigator.pop(context);
+  //               },
+  //               child: const Text('OK'),
+  //             ),
+  //           ],
+  //           shape: RoundedRectangleBorder(
+  //             borderRadius: BorderRadius.circular(16.0),
+  //           ),
+  //           elevation: 8.0,
+  //         );
+  //       },
+  //     );
+  //   } else if (!_nameValid.value &&
+  // !_emailValid.value &&
+  // !_passwordValid.value &&
+  // !_confirmPassword.value) {
+  //     showDialog(
+  //       context: context,
+  //       builder: (context) {
+  //         return AlertDialog(
+  //           title: const Text(
+  //             'Error',
+  //             style: TextStyle(color: Colors.red, fontWeight: FontWeight.bold),
+  //           ),
+  //           content: const Text('Please enter valid values for all fields.'),
+  //           actions: [
+  //             TextButton(
+  //               onPressed: () {
+  //                 Navigator.pop(context);
+  //               },
+  //               child: const Text('OK'),
+  //             ),
+  //           ],
+  //           shape: RoundedRectangleBorder(
+  //             borderRadius: BorderRadius.circular(16.0),
+  //           ),
+  //           elevation: 8.0,
+  //         );
+  //       },
+  //     );
+  //   } else {
+  //     setState(() {
+  //       _isLoading = true;
+  //     });
+
+  //     Future.delayed(const Duration(seconds: 2), () {
+  //       setState(() {
+  //         _isLoading = false;
+  //       });
+  //       Navigator.of(context).pushNamed('/signin');
+  //     });
+  //   }
+  // }
 
   @override
   Widget build(BuildContext context) {
@@ -459,8 +441,8 @@ class _SignUpPageState extends State<SignUpPage> {
                     padding: const EdgeInsets.only(
                         top: 10.0, bottom: 10.0, left: 30.0, right: 30.0),
                     child: PushableButton(
-                      // onPressed: _isLoading ? null : _signUpButtonPressed,
-                      onPressed: () => registerUser(),
+                      onPressed:
+                          _isLoading ? null : () => registerUser(context),
                       hslColor: HSLColor.fromColor(
                         const Color(0xFF1E3765),
                       ),
@@ -469,13 +451,15 @@ class _SignUpPageState extends State<SignUpPage> {
                       ),
                       height: 50,
                       elevation: 8,
-                      child: Text(
-                        'Sign Up',
-                        style: GoogleFonts.poppins(
-                            color: const Color(0xFFF8F7F2),
-                            fontWeight: FontWeight.w600,
-                            fontSize: 16),
-                      ),
+                      child: _isLoading
+                          ? const CircularProgressIndicator()
+                          : Text(
+                              'Sign Up',
+                              style: GoogleFonts.poppins(
+                                  color: const Color(0xFFF8F7F2),
+                                  fontWeight: FontWeight.w600,
+                                  fontSize: 16),
+                            ),
                     ),
                   ),
                   Align(
@@ -493,7 +477,7 @@ class _SignUpPageState extends State<SignUpPage> {
                         ),
                         InkWell(
                           onTap: () {
-                            // Navigate user to sign up page
+                            // Navigate user to sign in page
                             Navigator.pushNamed(context, '/signin');
                           },
                           child: Text(
