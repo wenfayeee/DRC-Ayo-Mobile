@@ -33,7 +33,6 @@ class _SignUpPageState extends State<SignUpPage> {
   bool _isNotValidate = false;
 
   void registerUser(BuildContext context) async {
-    print("anas is crazy");
     if (_formKey.currentState?.validate() ?? false) {
       var regBody = {
         "name": _newUserNameController.text,
@@ -52,9 +51,7 @@ class _SignUpPageState extends State<SignUpPage> {
 
         var jsonResponse =
             await jsonDecode(response.body) as Map<String, dynamic>;
-        print("after json response");
         // var statusCode = jsonResponse['statusCode'] as int?;
-        print("after status code");
 
         if (response.statusCode == 201) {
           Navigator.pushNamed(context, '/signin');
