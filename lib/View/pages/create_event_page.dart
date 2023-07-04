@@ -1,15 +1,17 @@
 import 'dart:convert';
 
 import 'package:event_management_app/Functions/config.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_animated_button/flutter_animated_button.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:http/http.dart' as http;
+import 'package:intl/intl.dart';
 import 'package:jwt_decoder/jwt_decoder.dart';
 import 'package:switcher_button/switcher_button.dart';
 
 class CreateEventPage extends StatefulWidget {
-  final String token;
+  final dynamic token;
   const CreateEventPage({required this.token, Key? key}) : super(key: key);
 
   @override
@@ -30,8 +32,9 @@ class _CreateEventPageState extends State<CreateEventPage> {
   bool isGuestListVisible = false;
 
   void initState() {
+    print("hi" + "$widget.token");
     super.initState();
-    Map<String, dynamic> jwtDecodedToken = JwtDecoder.decode(widget.token);
+    Map<dynamic, dynamic> jwtDecodedToken = JwtDecoder.decode(widget.token);
 
     email = jwtDecodedToken['email'];
   }
@@ -136,7 +139,7 @@ class _CreateEventPageState extends State<CreateEventPage> {
                           color: Colors.white,
                         ),
                         onPress: () {
-                          print("Event Created");
+                          addEvent();
                         },
                       ),
                     ),
@@ -209,6 +212,26 @@ class _CreateEventPageState extends State<CreateEventPage> {
                   padding:
                       const EdgeInsets.only(top: 10.0, left: 30.0, right: 30.0),
                   child: TextFormField(
+                    readOnly: true,
+                    onTap: () async {
+                      await showDatePicker(
+                              context: context,
+                              initialDate: DateTime.now(),
+                              firstDate: DateTime(2023),
+                              lastDate: DateTime(2100))
+                          .then((selectedDate) {
+                        if (selectedDate != null) {
+                          _dateController.text =
+                              DateFormat('yyyy-MM-dd').format(selectedDate);
+                        }
+                      });
+                    },
+                    validator: (value) {
+                      if (value == null || value.isEmpty) {
+                        return 'Please enter a date.';
+                      }
+                      return null;
+                    },
                     controller: _dateController,
                     keyboardType: TextInputType.datetime,
                     style: GoogleFonts.poppins(
@@ -239,6 +262,38 @@ class _CreateEventPageState extends State<CreateEventPage> {
                   padding:
                       const EdgeInsets.only(top: 10.0, left: 30.0, right: 30.0),
                   child: TextFormField(
+                    readOnly: true,
+                    onTap: () async {
+                      final selectedTime = await showCupertinoModalPopup(
+                        context: context,
+                        builder: (BuildContext context) {
+                          return Container(
+                            color: const Color(0xFFFFFFFF),
+                            height: 300.0,
+                            child: CupertinoDatePicker(
+                              mode: CupertinoDatePickerMode.time,
+                              initialDateTime: DateTime.now(),
+                              onDateTimeChanged: (DateTime newTime) {
+                                setState(() {
+                                  final formattedTime =
+                                      DateFormat('HH:mm:ss').format(newTime);
+                                  _timeController.text =
+                                      formattedTime.toString();
+                                });
+                              },
+                            ),
+                          );
+                        },
+                      );
+
+                      // Optional: You can use the selectedTime for further processing
+                      if (selectedTime != null) {
+                        final formattedTime =
+                            DateFormat('HH:mm:ss').format(selectedTime);
+                        print('Selected time: $formattedTime');
+                        // Perform any additional actions with the formattedTime
+                      }
+                    },
                     controller: _timeController,
                     keyboardType: TextInputType.datetime,
                     style: GoogleFonts.poppins(
@@ -269,6 +324,26 @@ class _CreateEventPageState extends State<CreateEventPage> {
                   padding:
                       const EdgeInsets.only(top: 10.0, left: 30.0, right: 30.0),
                   child: TextFormField(
+                    readOnly: true,
+                    onTap: () async {
+                      await showDatePicker(
+                              context: context,
+                              initialDate: DateTime.now(),
+                              firstDate: DateTime(2023),
+                              lastDate: DateTime(2100))
+                          .then((selectedDate) {
+                        if (selectedDate != null) {
+                          _rsvpController.text =
+                              DateFormat('yyyy-MM-dd').format(selectedDate);
+                        }
+                      });
+                    },
+                    validator: (value) {
+                      if (value == null || value.isEmpty) {
+                        return 'Please enter a date.';
+                      }
+                      return null;
+                    },
                     controller: _rsvpController,
                     keyboardType: TextInputType.datetime,
                     style: GoogleFonts.poppins(

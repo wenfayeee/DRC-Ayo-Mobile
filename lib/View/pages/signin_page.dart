@@ -4,7 +4,6 @@ import 'package:flutter/material.dart';
 import 'package:event_management_app/Functions/config.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:http/http.dart' as http;
-import 'package:jwt_decoder/jwt_decoder.dart';
 import 'package:pushable_button/pushable_button.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -43,11 +42,12 @@ class _SignInPageState extends State<SignInPage> {
           body: jsonEncode(reqBody),
         );
         var jsonResponse = jsonDecode(response.body) as Map<String, dynamic>;
-        // var statusCode = jsonResponse['statusCode'] as int?;
+        var statusCode = jsonResponse['statusCode'] as int?;
 
         if (response.statusCode == 200) {
           // Successful authentication
           var token = jsonResponse['token'] as String?;
+          print("$token");
           // Store token locally
           SharedPreferences prefs = await SharedPreferences.getInstance();
           await prefs.setString('token', token!);
