@@ -26,7 +26,7 @@ class _ForgotPwdPageState extends State<ForgotPwdPage> {
                 Padding(
                   padding: const EdgeInsets.only(top: 90.0),
                   child: Image.asset(
-                    'assets/images/logo.png',
+                    'assets/images/Ayo_logo.png',
                     width: 245.22,
                     height: 162.0,
                   ),
@@ -35,7 +35,7 @@ class _ForgotPwdPageState extends State<ForgotPwdPage> {
                 Text(
                   'Forgot your password?',
                   style: GoogleFonts.poppins(
-                    fontSize: 24.0,
+                    fontSize: 22.0,
                     fontWeight: FontWeight.w600,
                     color: const Color(0xFF1E3765),
                   ),
@@ -43,12 +43,12 @@ class _ForgotPwdPageState extends State<ForgotPwdPage> {
                 // const SizedBox(height: 10.0),
                 Padding(
                   padding: const EdgeInsets.only(
-                      top: 15.0, bottom: 15.0, left: 15.0, right: 15.0),
+                      top: 5.0, bottom: 15.0, left: 15.0, right: 15.0),
                   child: Text(
                     'Enter your email address below and we will send you a password reset link.',
                     textAlign: TextAlign.center,
                     style: GoogleFonts.poppins(
-                        color: const Color(0xFF888789),
+                        color: const Color(0xffb2bbda),
                         fontWeight: FontWeight.w500,
                         fontSize: 16.0),
                   ),
@@ -62,7 +62,7 @@ class _ForgotPwdPageState extends State<ForgotPwdPage> {
                     keyboardType: TextInputType.text,
                     style: GoogleFonts.poppins(
                         fontSize: 18.0,
-                        fontWeight: FontWeight.w500,
+                        fontWeight: FontWeight.w300,
                         color: const Color(0xFF000000)),
                     decoration: const InputDecoration(
                       filled: true,
@@ -71,7 +71,7 @@ class _ForgotPwdPageState extends State<ForgotPwdPage> {
                       contentPadding: EdgeInsets.all(12.0),
                       border: OutlineInputBorder(
                         borderSide: BorderSide(color: Color(0xFFC3C3C3)),
-                        borderRadius: BorderRadius.all(Radius.circular(15.0)),
+                        borderRadius: BorderRadius.all(Radius.circular(10.0)),
                       ),
                       hintStyle: TextStyle(
                         fontFamily: 'Poppins',
@@ -83,7 +83,7 @@ class _ForgotPwdPageState extends State<ForgotPwdPage> {
                     ),
                   ),
                 ),
-                const SizedBox(height: 90.0),
+                const SizedBox(height: 20.0),
                 Padding(
                   padding: const EdgeInsets.only(
                       top: 10.0, bottom: 10.0, left: 30.0, right: 30.0),
@@ -112,7 +112,7 @@ class _ForgotPwdPageState extends State<ForgotPwdPage> {
                 // const SizedBox(height: 5.0),
                 Padding(
                   padding: const EdgeInsets.only(
-                      top: 10.0, bottom: 10.0, left: 30.0, right: 30.0),
+                      top: 5.0, bottom: 10.0, left: 30.0, right: 30.0),
                   child: PushableButton(
                     onPressed: () {
                       Navigator.pushNamed(context, '/signin');

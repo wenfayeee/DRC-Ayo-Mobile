@@ -147,7 +147,7 @@ class _SignInPageState extends State<SignInPage> {
                   Padding(
                     padding: const EdgeInsets.only(top: 90.0),
                     child: Image.asset(
-                      'assets/images/logo.png',
+                      'assets/images/Ayo_logo.png',
                       width: 245.22,
                       height: 162.0,
                     ),
@@ -162,20 +162,24 @@ class _SignInPageState extends State<SignInPage> {
                     ),
                   ),
                   Padding(
-                    padding: const EdgeInsets.all(10.0),
+                    padding: const EdgeInsets.only(
+                      top: 2.0,
+                      left: 30.0,
+                      right: 30.0,
+                    ),
                     child: Text(
                       'Login to your account.',
                       style: GoogleFonts.poppins(
-                        color: const Color(0xFF888789),
+                        color: const Color(0xffb2bbda),
                         fontWeight: FontWeight.w500,
-                        fontSize: 14,
+                        fontSize: 18,
                       ),
                     ),
                   ),
-                  const SizedBox(height: 40.0),
+                  const SizedBox(height: 20.0),
                   Padding(
                     padding: const EdgeInsets.only(
-                      top: 10.0,
+                      top: 0,
                       left: 30.0,
                       right: 30.0,
                     ),
@@ -202,7 +206,7 @@ class _SignInPageState extends State<SignInPage> {
                           keyboardType: TextInputType.text,
                           style: GoogleFonts.poppins(
                             fontSize: 18.0,
-                            fontWeight: FontWeight.w500,
+                            fontWeight: FontWeight.w300,
                             color: const Color(0xFF000000),
                           ),
                           decoration: const InputDecoration(
@@ -213,7 +217,7 @@ class _SignInPageState extends State<SignInPage> {
                             border: OutlineInputBorder(
                               borderSide: BorderSide(color: Color(0xFFC3C3C3)),
                               borderRadius:
-                                  BorderRadius.all(Radius.circular(15.0)),
+                                  BorderRadius.all(Radius.circular(10.0)),
                             ),
                             hintStyle: TextStyle(
                               fontFamily: 'Poppins',
@@ -227,10 +231,10 @@ class _SignInPageState extends State<SignInPage> {
                       },
                     ),
                   ),
-                  const SizedBox(height: 20.0),
+                  const SizedBox(height: 0.0),
                   Padding(
                     padding: const EdgeInsets.only(
-                      top: 10.0,
+                      top: 15.0,
                       left: 30.0,
                       right: 30.0,
                     ),
@@ -255,7 +259,7 @@ class _SignInPageState extends State<SignInPage> {
                           keyboardType: TextInputType.text,
                           style: GoogleFonts.poppins(
                             fontSize: 18.0,
-                            fontWeight: FontWeight.w500,
+                            fontWeight: FontWeight.w300,
                             color: const Color(0xFF000000),
                           ),
                           decoration: InputDecoration(
@@ -279,7 +283,7 @@ class _SignInPageState extends State<SignInPage> {
                             border: const OutlineInputBorder(
                               borderSide: BorderSide(color: Color(0xFFC3C3C3)),
                               borderRadius:
-                                  BorderRadius.all(Radius.circular(15.0)),
+                                  BorderRadius.all(Radius.circular(10.0)),
                             ),
                             hintStyle: const TextStyle(
                               fontFamily: 'Poppins',
@@ -293,7 +297,7 @@ class _SignInPageState extends State<SignInPage> {
                       },
                     ),
                   ),
-                  const SizedBox(height: 10.0),
+                  const SizedBox(height: 0.0),
                   Align(
                     alignment: Alignment.centerRight,
                     child: Row(
@@ -304,11 +308,11 @@ class _SignInPageState extends State<SignInPage> {
                             Navigator.pushNamed(context, '/forgotPwd');
                           },
                           child: Padding(
-                            padding: const EdgeInsets.only(right: 50.0),
+                            padding: const EdgeInsets.only(right: 40.0),
                             child: Text(
                               'Forgot password?',
                               style: GoogleFonts.poppins(
-                                fontSize: 12,
+                                fontSize: 15,
                                 fontWeight: FontWeight.w500,
                                 color: const Color(0xFF1E3765),
                               ),
@@ -318,7 +322,7 @@ class _SignInPageState extends State<SignInPage> {
                       ],
                     ),
                   ),
-                  const SizedBox(height: 50.0),
+                  const SizedBox(height: 200.0),
                   Padding(
                     padding: const EdgeInsets.only(
                       top: 10.0,
@@ -340,7 +344,7 @@ class _SignInPageState extends State<SignInPage> {
                       child: Text(
                         'Login',
                         style: GoogleFonts.poppins(
-                          fontSize: 16,
+                          fontSize: 20,
                           fontWeight: FontWeight.w600,
                           color: const Color(0xFFF8F7F2),
                         ),
@@ -355,7 +359,7 @@ class _SignInPageState extends State<SignInPage> {
                         Text(
                           "Don't have an account? ",
                           style: GoogleFonts.poppins(
-                            fontSize: 12,
+                            fontSize: 15,
                             fontWeight: FontWeight.w500,
                             color: const Color(0xFF939393),
                           ),
@@ -368,7 +372,7 @@ class _SignInPageState extends State<SignInPage> {
                           child: Text(
                             'Register now.',
                             style: GoogleFonts.poppins(
-                              fontSize: 12,
+                              fontSize: 15,
                               fontWeight: FontWeight.w500,
                               color: const Color(0xFF1E3765),
                             ),
