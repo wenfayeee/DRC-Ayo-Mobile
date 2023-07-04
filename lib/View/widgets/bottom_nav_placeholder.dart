@@ -5,9 +5,9 @@ import 'package:event_management_app/View/widgets/bottom_nav_bar.dart';
 import 'package:flutter/material.dart';
 
 class BottomNavPlaceholder extends StatefulWidget {
-  final dynamic token; // Update the type of 'token' to String
+  final dynamic token;
   const BottomNavPlaceholder({
-    required this.token, // Add the 'required' keyword
+    required this.token,
     Key? key,
   }) : super(key: key);
 
@@ -44,8 +44,8 @@ class _BottomNavPlaceholderState extends State<BottomNavPlaceholder>
       body: TabBarView(
         controller: _tabController,
         children: [
-          HomePage(token: widget.token), // Pass 'widget.token' here
-          CreateEventPage(),
+          HomePage(token: widget.token),
+          CreateEventPage(token: widget.token),
           ProfilePage(),
         ],
       ),

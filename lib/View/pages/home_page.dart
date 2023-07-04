@@ -43,7 +43,7 @@ class _HomePageState extends State<HomePage> {
                     FkToggle(
                       width: 120,
                       height: 50,
-                      labels: const ['Upcoming', 'Previous'],
+                      labels: const ['Upcoming', 'Hosted'],
                       selectedColor: const Color(0xFF2A4F92),
                       backgroundColor: const Color(0xFFC3C3C4),
                       onSelected: (int index, FkToggle toggle) {

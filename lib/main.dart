@@ -34,8 +34,6 @@ bool isTokenValid(String? token) {
   return false;
 }
 
-
-
 void main() async {
   print("object");
   WidgetsFlutterBinding.ensureInitialized();
@@ -79,11 +77,12 @@ class _MainAppState extends State<MainApp> {
       initialRoute: homeRoute,
       routes: {
         // Your other routes
+        '/splash': (context) => const SplashScreenPage(),
         '/signin': (context) => const SignInPage(),
         '/signup': (context) => const SignUpPage(),
         '/home': (context) => HomePage(token: widget.token),
-        '/create': (context) => const CreateEventPage(),
-        '/profile': (context) => ProfilePage(),
+        '/create': (context) => CreateEventPage(token: widget.token),
+        '/profile': (context) => const ProfilePage(),
         '/forgotPwd': (context) => const ForgotPwdPage(),
         '/eventHist': (context) => EventHistoryPage(),
         '/editProfile': (context) => EditProfilePage(),

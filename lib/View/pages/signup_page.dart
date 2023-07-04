@@ -1,11 +1,8 @@
 import 'dart:convert';
-import 'dart:async';
 import 'package:event_management_app/Functions/config.dart';
-import 'package:event_management_app/View/pages/signin_page.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:http/http.dart' as http;
-import 'package:jwt_decoder/jwt_decoder.dart';
 import 'package:pushable_button/pushable_button.dart';
 
 class SignUpPage extends StatefulWidget {
