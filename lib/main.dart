@@ -40,7 +40,7 @@ class MainApp extends StatelessWidget {
         '/signin': (context) => const SignInPage(),
         '/signup': (context) => const SignUpPage(),
         '/home': (context) => HomePage(token: token),
-        '/create': (context) => const CreateEventPage(),
+        '/create': (context) => CreateEventPage(token: token),
         '/profile': (context) => const ProfilePage(),
         '/forgotPwd': (context) => const ForgotPwdPage(),
         '/navigator': (context) => BottomNavPlaceholder(token: token),

@@ -43,7 +43,7 @@ class _SignInPageState extends State<SignInPage> {
           body: jsonEncode(reqBody),
         );
         var jsonResponse = jsonDecode(response.body) as Map<String, dynamic>;
-        var statusCode = jsonResponse['statusCode'] as int?;
+        // var statusCode = jsonResponse['statusCode'] as int?;
 
         if (response.statusCode == 200) {
           // Successful authentication

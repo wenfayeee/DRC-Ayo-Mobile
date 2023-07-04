@@ -44,8 +44,8 @@ class _BottomNavPlaceholderState extends State<BottomNavPlaceholder>
       body: TabBarView(
         controller: _tabController,
         children: [
-          HomePage(token: widget.token), // Pass 'widget.token' here
-          CreateEventPage(),
+          HomePage(token: widget.token),
+          CreateEventPage(token: widget.token),
           ProfilePage(),
         ],
       ),

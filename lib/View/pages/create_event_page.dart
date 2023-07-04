@@ -1,26 +1,89 @@
+import 'dart:convert';
+
+import 'package:event_management_app/Functions/config.dart';
 import 'package:flutter/material.dart';
-import 'package:google_fonts/google_fonts.dart';
-import 'package:pushable_button/pushable_button.dart';
-import 'package:switcher_button/switcher_button.dart';
 import 'package:flutter_animated_button/flutter_animated_button.dart';
+import 'package:google_fonts/google_fonts.dart';
+import 'package:http/http.dart' as http;
+import 'package:jwt_decoder/jwt_decoder.dart';
+import 'package:switcher_button/switcher_button.dart';
 
 class CreateEventPage extends StatefulWidget {
-  const CreateEventPage({Key? key}) : super(key: key);
+  final String token;
+  const CreateEventPage({required this.token, Key? key}) : super(key: key);
 
   @override
   State<CreateEventPage> createState() => _CreateEventPageState();
 }
 
 class _CreateEventPageState extends State<CreateEventPage> {
+  late String email;
   final _titleController = TextEditingController();
-  final _venueController = TextEditingController();
   final _dateController = TextEditingController();
   final _timeController = TextEditingController();
-  final _rsvpController = TextEditingController();
+  final _venueController = TextEditingController();
   final _descriptionController = TextEditingController();
-  final _senderEmailController = TextEditingController();
+  final _rsvpController = TextEditingController();
+  final _eventCodeController = TextEditingController();
+  final _inviteeEmailController = TextEditingController();
 
   bool isGuestListVisible = false;
+
+  void initState() {
+    super.initState();
+    Map<String, dynamic> jwtDecodedToken = JwtDecoder.decode(widget.token);
+
+    email = jwtDecodedToken['email'];
+  }
+
+  void addEvent() async {
+    if (_titleController.text.isNotEmpty &&
+        _dateController.text.isNotEmpty &&
+        _timeController.text.isNotEmpty &&
+        _venueController.text.isNotEmpty &&
+        _descriptionController.text.isNotEmpty &&
+        _rsvpController.text.isNotEmpty &&
+        _eventCodeController.text.isNotEmpty &&
+        _inviteeEmailController.text.isNotEmpty) {
+      var reqBody = {
+        "title": _titleController.text,
+        "date": _dateController.text,
+        "time": _timeController.text,
+        "venue": _venueController,
+        "description": _descriptionController,
+        "rsvp": _rsvpController,
+        "eventCode": _eventCodeController,
+        "inviteeEmail": _inviteeEmailController,
+        "email": email
+      };
+      try {
+        var response = await http.post(
+          Uri.parse(createEvent),
+          headers: {
+            "Content-Type": "application/json; charset=utf-8",
+            "Authorization": "Bearer ${widget.token}"
+          },
+          body: jsonEncode(reqBody),
+        );
+
+        if (response.statusCode == 200) {
+          var jsonResponse = jsonDecode(response.body);
+          var success = jsonResponse['success'];
+          var message = jsonResponse['message'];
+
+          if (success) {
+            print("Event added successfully");
+          } else {
+            print("Event addition failed");
+          }
+        } else {
+          print('Request failed with status: ${response.statusCode}');
+        }
+      } catch (error) {
+        print('Error: $error');
+      }
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -33,7 +96,7 @@ class _CreateEventPageState extends State<CreateEventPage> {
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                SizedBox(height: 15),
+                const SizedBox(height: 15),
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
@@ -59,10 +122,11 @@ class _CreateEventPageState extends State<CreateEventPage> {
                         width: 100,
                         text: 'Create',
                         isReverse: true,
-                        selectedTextColor: Color.fromARGB(255, 255, 255, 255),
+                        selectedTextColor:
+                            const Color.fromARGB(255, 255, 255, 255),
                         transitionType: TransitionType.LEFT_TO_RIGHT,
-                        backgroundColor: Color(0xFFB3AE99),
-                        selectedBackgroundColor: Color(0xFF6B5F4A),
+                        backgroundColor: const Color(0xFFB3AE99),
+                        selectedBackgroundColor: const Color(0xFF6B5F4A),
                         borderColor: Colors.white,
                         borderRadius: 50,
                         borderWidth: 2,
@@ -84,7 +148,7 @@ class _CreateEventPageState extends State<CreateEventPage> {
                       const EdgeInsets.only(top: 10.0, left: 30.0, right: 30.0),
                   child: TextFormField(
                     controller: _titleController,
-                    keyboardType: TextInputType.text,
+                    keyboardType: TextInputType.multiline,
                     style: GoogleFonts.poppins(
                         fontSize: 18.0,
                         fontWeight: FontWeight.w500,
@@ -116,7 +180,7 @@ class _CreateEventPageState extends State<CreateEventPage> {
                       const EdgeInsets.only(top: 10.0, left: 30.0, right: 30.0),
                   child: TextFormField(
                     controller: _venueController,
-                    keyboardType: TextInputType.text,
+                    keyboardType: TextInputType.multiline,
                     style: GoogleFonts.poppins(
                         fontSize: 18.0,
                         fontWeight: FontWeight.w500,
@@ -267,7 +331,7 @@ class _CreateEventPageState extends State<CreateEventPage> {
                       const EdgeInsets.only(top: 10.0, left: 30.0, right: 30.0),
                   child: TextFormField(
                     maxLines: null,
-                    controller: _senderEmailController,
+                    controller: _inviteeEmailController,
                     keyboardType: TextInputType.emailAddress,
                     style: GoogleFonts.poppins(
                         fontSize: 18.0,
