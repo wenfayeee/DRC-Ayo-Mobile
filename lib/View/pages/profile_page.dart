@@ -1,5 +1,8 @@
+import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:image_picker_android/image_picker_android.dart';
+import 'package:image_picker_platform_interface/image_picker_platform_interface.dart';
 
 class ProfilePage extends StatefulWidget {
   const ProfilePage({Key? key}) : super(key: key);
@@ -9,6 +12,34 @@ class ProfilePage extends StatefulWidget {
 }
 
 class _ProfilePageState extends State<ProfilePage> {
+  File? _image;
+  final ImagePickerPlatform _picker = ImagePickerPlatform.instance;
+
+  Future<void> _pickImage() async {
+    if (_picker is ImagePickerAndroid) {
+      (_picker as ImagePickerAndroid).useAndroidPhotoPicker = true;
+    }
+
+    final pickedImage = await _picker.getImage(source: ImageSource.gallery);
+    if (pickedImage != null) {
+      setState(() {
+        _image = File(pickedImage.path);
+      });
+    }
+  }
+
+  void _navigateToEditProfile() {
+    Navigator.pushNamed(context, '/editProfile');
+  }
+
+  void _navigateToResetPassword() {
+    Navigator.pushNamed(context, '/resetProfile');
+  }
+
+  void _navigateToEventHistory() {
+    Navigator.pushNamed(context, '/eventHist');
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -21,8 +52,6 @@ class _ProfilePageState extends State<ProfilePage> {
               padding: const EdgeInsets.all(22.0),
               child: Text(
                 "User Account",
-                overflow: TextOverflow.ellipsis,
-                textAlign: TextAlign.left,
                 style: GoogleFonts.poppins(
                   fontSize: 28.0,
                   fontWeight: FontWeight.w800,
@@ -30,10 +59,161 @@ class _ProfilePageState extends State<ProfilePage> {
                 ),
               ),
             ),
-            const Center(
-              child: Text('User Profile Page'),
+            const SizedBox(height: 20),
+            Center(
+              child: GestureDetector(
+                onTap: _pickImage,
+                child: CircleAvatar(
+                  radius: 90,
+                  backgroundColor: const Color(0xFFB3AE994D),
+                  child: CircleAvatar(
+                    radius: 85,
+                    backgroundImage: _image != null ? FileImage(_image!) : null,
+                  ),
+                ),
+              ),
+            ),
+            const SizedBox(height: 5),
+            Padding(
+              padding: const EdgeInsets.only(top: 2),
+              child: Center(
+                child: Container(
+                  width: 276,
+                  height: 70,
+                  decoration: BoxDecoration(
+                    color: Color.fromARGB(57, 174, 153, 77),
+                    borderRadius: BorderRadius.circular(10),
+                    border:
+                        Border.all(color: const Color(0xFFB3AE994D), width: 3),
+                  ),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Column(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Row(
+                            children: const [
+                              SizedBox(width: 10),
+                              Icon(
+                                Icons.person,
+                                color: Colors.black,
+                                size: 20,
+                              ),
+                              SizedBox(width: 10),
+                              Text(
+                                'John Doe',
+                                style: TextStyle(
+                                  color: Color(0xFF1E3765),
+                                  fontSize: 14,
+                                  fontFamily: 'Poppins',
+                                  fontWeight: FontWeight.w600,
+                                ),
+                              ),
+                            ],
+                          ),
+                          const SizedBox(height: 5),
+                          Row(
+                            children: const [
+                              SizedBox(width: 10),
+                              Icon(
+                                Icons.email,
+                                color: Colors.black,
+                                size: 20,
+                              ),
+                              SizedBox(width: 10),
+                              Text(
+                                'johndoe@mail.com',
+                                style: TextStyle(
+                                  color: Color(0xFF1E3765),
+                                  fontSize: 14,
+                                  fontFamily: 'Poppins',
+                                  fontWeight: FontWeight.w600,
+                                ),
+                              ),
+                            ],
+                          ),
+                        ],
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+            ),
+            const SizedBox(height: 20),
+            ProfileOption(
+              title: 'Edit Profile',
+              icon: Icons.edit,
+              onPressed: _navigateToEditProfile,
+            ),
+            const SizedBox(height: 20),
+            ProfileOption(
+              title: 'Reset Password',
+              icon: Icons.vpn_key,
+              onPressed: _navigateToResetPassword,
+            ),
+            const SizedBox(height: 20),
+            ProfileOption(
+              title: 'Event History',
+              icon: Icons.calendar_today,
+              onPressed: _navigateToEventHistory,
+            ),
+            const SizedBox(height: 20),
+            const ProfileOption(
+              title: 'Logout',
+              icon: Icons.logout,
             ),
           ],
+        ),
+      ),
+    );
+  }
+}
+
+class ProfileOption extends StatelessWidget {
+  final String title;
+  final IconData icon;
+  final VoidCallback? onPressed;
+
+  const ProfileOption({
+    Key? key,
+    required this.title,
+    required this.icon,
+    this.onPressed,
+  }) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 21),
+      child: InkWell(
+        onTap: onPressed,
+        child: Container(
+          padding: const EdgeInsets.symmetric(vertical: 18, horizontal: 16),
+          decoration: BoxDecoration(
+            color: Colors.white,
+            borderRadius: BorderRadius.circular(10),
+          ),
+          child: Row(
+            children: [
+              Icon(
+                icon,
+                color: Colors.black,
+                size: 24,
+              ),
+              const SizedBox(width: 16),
+              Text(
+                title,
+                style: const TextStyle(
+                  color: Colors.black,
+                  fontSize: 18,
+                  fontFamily: 'Poppins',
+                  fontWeight: FontWeight.w600,
+                ),
+              ),
+            ],
+          ),
         ),
       ),
     );

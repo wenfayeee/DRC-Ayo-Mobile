@@ -6,6 +6,9 @@ import 'package:event_management_app/View/pages/home_page.dart';
 import 'package:event_management_app/View/pages/signin_page.dart';
 import 'package:event_management_app/View/pages/signup_page.dart';
 import 'package:event_management_app/View/pages/splashscreen.dart';
+import 'package:event_management_app/View/pages/edit_profile_page.dart';
+import 'package:event_management_app/View/pages/event_history_page.dart';
+import 'package:event_management_app/View/pages/reset_profile_page.dart';
 import 'package:event_management_app/View/widgets/bottom_nav_placeholder.dart';
 import 'package:flutter/material.dart';
 import 'package:jwt_decoder/jwt_decoder.dart';
@@ -39,11 +42,14 @@ class MainApp extends StatelessWidget {
         '/splash': (context) => const SplashScreenPage(),
         '/signin': (context) => const SignInPage(),
         '/signup': (context) => const SignUpPage(),
-        '/home': (context) => HomePage(token: token),
+        '/home': (context) => const HomePage(),
         '/create': (context) => const CreateEventPage(),
-        '/profile': (context) => const ProfilePage(),
+        '/profile': (context) => ProfilePage(),
         '/forgotPwd': (context) => const ForgotPwdPage(),
-        '/navigator': (context) => BottomNavPlaceholder(token: token),
+        '/eventHist': (context) => EventHistoryPage(),
+        '/editProfile': (context) => EditProfilePage(),
+        '/resetProfile': (context) => ResetProfilePage(),
+        '/navigator': (context) => const BottomNavPlaceholder(),
         '/error': (context) => const ErrorPage(),
       },
     );
