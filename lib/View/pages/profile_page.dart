@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:image_picker_android/image_picker_android.dart';
 import 'package:image_picker_platform_interface/image_picker_platform_interface.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class ProfilePage extends StatefulWidget {
   const ProfilePage({Key? key}) : super(key: key);
@@ -38,6 +39,15 @@ class _ProfilePageState extends State<ProfilePage> {
 
   void _navigateToEventHistory() {
     Navigator.pushNamed(context, '/eventHist');
+  }
+
+  void _logout() async {
+    // Clear the authentication token from shared preferences or any other storage mechanism you are using
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    await prefs.remove('token');
+
+    // Navigate back to the sign-in page
+    Navigator.pushNamedAndRemoveUntil(context, '/signin', (route) => false);
   }
 
   @override
@@ -160,9 +170,10 @@ class _ProfilePageState extends State<ProfilePage> {
               onPressed: _navigateToEventHistory,
             ),
             const SizedBox(height: 20),
-            const ProfileOption(
+            ProfileOption(
               title: 'Logout',
               icon: Icons.logout,
+              onPressed: _logout,
             ),
           ],
         ),

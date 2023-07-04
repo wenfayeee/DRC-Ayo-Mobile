@@ -48,6 +48,7 @@ class _SignInPageState extends State<SignInPage> {
         if (response.statusCode == 200) {
           // Successful authentication
           var token = jsonResponse['token'] as String?;
+          print("$token");
           // Store token locally
           SharedPreferences prefs = await SharedPreferences.getInstance();
           await prefs.setString('token', token!);
