@@ -8,7 +8,6 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:http/http.dart' as http;
 import 'package:intl/intl.dart';
 import 'package:jwt_decoder/jwt_decoder.dart';
-import 'package:switcher_button/switcher_button.dart';
 
 class CreateEventPage extends StatefulWidget {
   final dynamic token;
@@ -25,7 +24,8 @@ class _CreateEventPageState extends State<CreateEventPage> {
   final _timeController = TextEditingController();
   final _venueController = TextEditingController();
   final _descriptionController = TextEditingController();
-  final _rsvpController = TextEditingController();
+  final _rsvpDateController = TextEditingController();
+  final _rsvpTimeController = TextEditingController();
   final _eventCodeController = TextEditingController();
   final _inviteeEmailController = TextEditingController();
 
@@ -39,26 +39,44 @@ class _CreateEventPageState extends State<CreateEventPage> {
     email = jwtDecodedToken['email'];
   }
 
+  @override
+  void dispose() {
+    super.dispose();
+    _titleController.dispose();
+    _dateController.dispose();
+    _timeController.dispose();
+    _venueController.dispose();
+    _descriptionController.dispose();
+    _rsvpDateController.dispose();
+    _rsvpTimeController.dispose();
+    _eventCodeController.dispose();
+    _inviteeEmailController.dispose();
+  }
+
   void addEvent() async {
     if (_titleController.text.isNotEmpty &&
         _dateController.text.isNotEmpty &&
         _timeController.text.isNotEmpty &&
         _venueController.text.isNotEmpty &&
         _descriptionController.text.isNotEmpty &&
-        _rsvpController.text.isNotEmpty &&
+        _rsvpDateController.text.isNotEmpty &&
+        _rsvpTimeController.text.isNotEmpty &&
         _eventCodeController.text.isNotEmpty &&
         _inviteeEmailController.text.isNotEmpty) {
       var reqBody = {
         "title": _titleController.text,
         "date": _dateController.text,
         "time": _timeController.text,
-        "venue": _venueController,
-        "description": _descriptionController,
-        "rsvp": _rsvpController,
-        "eventCode": _eventCodeController,
-        "inviteeEmail": _inviteeEmailController,
-        "email": email
+        "venue": _venueController.text,
+        "description": _descriptionController.text,
+        "rsvpDate": _rsvpDateController.text,
+        "rsvpTime": _rsvpTimeController.text,
+        "eventCode": _eventCodeController.text,
+        "inviteeEmail": _inviteeEmailController.text,
+        "email": email,
       };
+
+      print('add');
       try {
         var response = await http.post(
           Uri.parse(createEvent),
@@ -69,21 +87,25 @@ class _CreateEventPageState extends State<CreateEventPage> {
           body: jsonEncode(reqBody),
         );
 
+        print('token');
+
+        // stuck at the code below this
         if (response.statusCode == 200) {
           var jsonResponse = jsonDecode(response.body);
           var success = jsonResponse['success'];
           var message = jsonResponse['message'];
+
+          print('adding');
 
           if (success) {
             print("Event added successfully");
           } else {
             print("Event addition failed");
           }
-        } else {
-          print('Request failed with status: ${response.statusCode}');
         }
       } catch (error) {
-        print('Error: $error');
+        print('Request failed with error $error');
+        Navigator.pushNamed(context, '/error');
       }
     }
   }
@@ -117,7 +139,6 @@ class _CreateEventPageState extends State<CreateEventPage> {
                       ),
                     ),
                     Padding(
-                      // Add Padding widget to adjust the position of the button
                       padding: const EdgeInsets.only(
                           top: 22.0, right: 25.0, bottom: 2.0, left: 10.0),
                       child: AnimatedButton(
@@ -145,7 +166,7 @@ class _CreateEventPageState extends State<CreateEventPage> {
                     ),
                   ],
                 ),
-                const SizedBox(height: 20.0),
+                const SizedBox(height: 30.0),
                 Padding(
                   padding:
                       const EdgeInsets.only(top: 10.0, left: 30.0, right: 30.0),
@@ -182,49 +203,29 @@ class _CreateEventPageState extends State<CreateEventPage> {
                   padding:
                       const EdgeInsets.only(top: 10.0, left: 30.0, right: 30.0),
                   child: TextFormField(
-                    controller: _venueController,
-                    keyboardType: TextInputType.multiline,
-                    style: GoogleFonts.poppins(
-                        fontSize: 18.0,
-                        fontWeight: FontWeight.w500,
-                        color: const Color(0xFF000000)),
-                    decoration: const InputDecoration(
-                      filled: true,
-                      fillColor: Color(0xFFFFFFFF),
-                      hintText: 'Venue',
-                      contentPadding: EdgeInsets.all(12.0),
-                      border: OutlineInputBorder(
-                        borderSide: BorderSide(color: Color(0xFFC3C3C3)),
-                        borderRadius: BorderRadius.all(Radius.circular(15.0)),
-                      ),
-                      hintStyle: TextStyle(
-                        fontFamily: 'Poppins',
-                        fontSize: 18.0,
-                        fontWeight: FontWeight.w500,
-                        color: Color(0xFFC3C3C3),
-                      ),
-                      alignLabelWithHint: true,
-                    ),
-                  ),
-                ),
-                const SizedBox(height: 5.0),
-                Padding(
-                  padding:
-                      const EdgeInsets.only(top: 10.0, left: 30.0, right: 30.0),
-                  child: TextFormField(
                     readOnly: true,
                     onTap: () async {
-                      await showDatePicker(
-                              context: context,
-                              initialDate: DateTime.now(),
-                              firstDate: DateTime(2023),
-                              lastDate: DateTime(2100))
-                          .then((selectedDate) {
-                        if (selectedDate != null) {
-                          _dateController.text =
-                              DateFormat('yyyy-MM-dd').format(selectedDate);
-                        }
-                      });
+                      final currentDate = DateTime.now();
+                      await showCupertinoModalPopup(
+                        context: context,
+                        builder: (BuildContext context) {
+                          return Container(
+                            width: double.infinity,
+                            height: 300.0,
+                            child: CupertinoDatePicker(
+                              backgroundColor: const Color(0xFFFFFFFF),
+                              mode: CupertinoDatePickerMode.date,
+                              initialDateTime: currentDate,
+                              minimumDate: currentDate,
+                              maximumDate: DateTime(2100),
+                              onDateTimeChanged: (DateTime selectedDate) {
+                                _dateController.text = DateFormat('yyyy-MM-dd')
+                                    .format(selectedDate);
+                              },
+                            ),
+                          );
+                        },
+                      );
                     },
                     validator: (value) {
                       if (value == null || value.isEmpty) {
@@ -235,9 +236,10 @@ class _CreateEventPageState extends State<CreateEventPage> {
                     controller: _dateController,
                     keyboardType: TextInputType.datetime,
                     style: GoogleFonts.poppins(
-                        fontSize: 18.0,
-                        fontWeight: FontWeight.w500,
-                        color: const Color(0xFF000000)),
+                      fontSize: 18.0,
+                      fontWeight: FontWeight.w500,
+                      color: const Color(0xFF000000),
+                    ),
                     decoration: const InputDecoration(
                       filled: true,
                       fillColor: Color(0xFFFFFFFF),
@@ -285,13 +287,10 @@ class _CreateEventPageState extends State<CreateEventPage> {
                           );
                         },
                       );
-
-                      // Optional: You can use the selectedTime for further processing
                       if (selectedTime != null) {
                         final formattedTime =
                             DateFormat('HH:mm:ss').format(selectedTime);
                         print('Selected time: $formattedTime');
-                        // Perform any additional actions with the formattedTime
                       }
                     },
                     controller: _timeController,
@@ -324,28 +323,8 @@ class _CreateEventPageState extends State<CreateEventPage> {
                   padding:
                       const EdgeInsets.only(top: 10.0, left: 30.0, right: 30.0),
                   child: TextFormField(
-                    readOnly: true,
-                    onTap: () async {
-                      await showDatePicker(
-                              context: context,
-                              initialDate: DateTime.now(),
-                              firstDate: DateTime(2023),
-                              lastDate: DateTime(2100))
-                          .then((selectedDate) {
-                        if (selectedDate != null) {
-                          _rsvpController.text =
-                              DateFormat('yyyy-MM-dd').format(selectedDate);
-                        }
-                      });
-                    },
-                    validator: (value) {
-                      if (value == null || value.isEmpty) {
-                        return 'Please enter a date.';
-                      }
-                      return null;
-                    },
-                    controller: _rsvpController,
-                    keyboardType: TextInputType.datetime,
+                    controller: _venueController,
+                    keyboardType: TextInputType.multiline,
                     style: GoogleFonts.poppins(
                         fontSize: 18.0,
                         fontWeight: FontWeight.w500,
@@ -353,7 +332,7 @@ class _CreateEventPageState extends State<CreateEventPage> {
                     decoration: const InputDecoration(
                       filled: true,
                       fillColor: Color(0xFFFFFFFF),
-                      hintText: 'RSVP Before',
+                      hintText: 'Venue',
                       contentPadding: EdgeInsets.all(12.0),
                       border: OutlineInputBorder(
                         borderSide: BorderSide(color: Color(0xFFC3C3C3)),
@@ -400,6 +379,179 @@ class _CreateEventPageState extends State<CreateEventPage> {
                     ),
                   ),
                 ),
+                const SizedBox(height: 16.0),
+                Row(
+                  children: [
+                    Expanded(
+                      child: Padding(
+                        padding: const EdgeInsets.only(left: 30.0, right: 5.0),
+                        child: TextFormField(
+                          readOnly: true,
+                          onTap: () async {
+                            final DateTime? pickedDate =
+                                await showCupertinoModalPopup<DateTime>(
+                              context: context,
+                              builder: (BuildContext context) {
+                                return SizedBox(
+                                  width: MediaQuery.of(context).size.width,
+                                  height: 300.0,
+                                  child: CupertinoDatePicker(
+                                    backgroundColor: const Color(0xFFFFFFFF),
+                                    mode: CupertinoDatePickerMode.date,
+                                    minimumDate: DateTime.now(),
+                                    maximumDate: DateTime(2100),
+                                    onDateTimeChanged: (DateTime? newDate) {
+                                      if (newDate != null) {
+                                        // Handle the selected date
+                                        final formattedDate =
+                                            DateFormat('yyyy-MM-dd')
+                                                .format(newDate);
+                                        _rsvpDateController.text =
+                                            formattedDate;
+                                      }
+                                    },
+                                  ),
+                                );
+                              },
+                            );
+                            if (pickedDate != null) {
+                              final formattedDate =
+                                  DateFormat('yyyy-MM-dd').format(pickedDate);
+                              _rsvpDateController.text = formattedDate;
+                            }
+                          },
+                          controller: _rsvpDateController,
+                          keyboardType: TextInputType.datetime,
+                          style: GoogleFonts.poppins(
+                            fontSize: 18.0,
+                            fontWeight: FontWeight.w500,
+                            color: const Color(0xFF000000),
+                          ),
+                          decoration: const InputDecoration(
+                            filled: true,
+                            fillColor: Color(0xFFFFFFFF),
+                            hintText: 'RSVP Date',
+                            contentPadding: EdgeInsets.all(12.0),
+                            border: OutlineInputBorder(
+                              borderSide: BorderSide(color: Color(0xFFC3C3C3)),
+                              borderRadius:
+                                  BorderRadius.all(Radius.circular(15.0)),
+                            ),
+                            hintStyle: TextStyle(
+                              fontFamily: 'Poppins',
+                              fontSize: 18.0,
+                              fontWeight: FontWeight.w500,
+                              color: Color(0xFFC3C3C3),
+                            ),
+                            alignLabelWithHint: true,
+                          ),
+                        ),
+                      ),
+                    ),
+                    Expanded(
+                      child: Padding(
+                        padding: const EdgeInsets.only(left: 5.0, right: 30.0),
+                        child: TextFormField(
+                          readOnly: true,
+                          onTap: () async {
+                            final currentTime = DateTime.now();
+                            final selectedTime = await showCupertinoModalPopup(
+                              context: context,
+                              builder: (BuildContext context) {
+                                return Container(
+                                  color: const Color(0xFFFFFFFF),
+                                  height: 300.0,
+                                  child: CupertinoDatePicker(
+                                    mode: CupertinoDatePickerMode.time,
+                                    initialDateTime: currentTime,
+                                    onDateTimeChanged: (DateTime newTime) {
+                                      setState(() {
+                                        final formattedTime =
+                                            DateFormat('HH:mm:ss')
+                                                .format(newTime);
+                                        _rsvpTimeController.text =
+                                            formattedTime.toString();
+                                      });
+                                    },
+                                  ),
+                                );
+                              },
+                            );
+                            if (selectedTime != null) {
+                              setState(() {
+                                final formattedTime =
+                                    DateFormat('HH:mm:ss').format(selectedTime);
+                                _rsvpTimeController.text =
+                                    formattedTime.toString();
+                              });
+                            }
+                          },
+                          validator: (value) {
+                            if (value == null || value.isEmpty) {
+                              return 'Please enter time.';
+                            }
+                            return null;
+                          },
+                          controller: _rsvpTimeController,
+                          keyboardType: TextInputType.datetime,
+                          style: GoogleFonts.poppins(
+                            fontSize: 18.0,
+                            fontWeight: FontWeight.w500,
+                            color: const Color(0xFF000000),
+                          ),
+                          decoration: const InputDecoration(
+                            filled: true,
+                            fillColor: Color(0xFFFFFFFF),
+                            hintText: 'RSVP Time',
+                            contentPadding: EdgeInsets.all(12.0),
+                            border: OutlineInputBorder(
+                              borderSide: BorderSide(color: Color(0xFFC3C3C3)),
+                              borderRadius:
+                                  BorderRadius.all(Radius.circular(15.0)),
+                            ),
+                            hintStyle: TextStyle(
+                              fontFamily: 'Poppins',
+                              fontSize: 18.0,
+                              fontWeight: FontWeight.w500,
+                              color: Color(0xFFC3C3C3),
+                            ),
+                            alignLabelWithHint: true,
+                          ),
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+                const SizedBox(height: 5.0),
+                Padding(
+                  padding:
+                      const EdgeInsets.only(top: 10.0, left: 30.0, right: 30.0),
+                  child: TextFormField(
+                    controller: _eventCodeController,
+                    keyboardType: TextInputType.text,
+                    style: GoogleFonts.poppins(
+                        fontSize: 18.0,
+                        fontWeight: FontWeight.w500,
+                        color: const Color(0xFF000000)),
+                    decoration: const InputDecoration(
+                      filled: true,
+                      fillColor: Color(0xFFFFFFFF),
+                      hintText: 'Event Code',
+                      contentPadding: EdgeInsets.all(12.0),
+                      border: OutlineInputBorder(
+                        borderSide: BorderSide(color: Color(0xFFC3C3C3)),
+                        borderRadius: BorderRadius.all(Radius.circular(15.0)),
+                      ),
+                      hintStyle: TextStyle(
+                        fontFamily: 'Poppins',
+                        fontSize: 18.0,
+                        fontWeight: FontWeight.w500,
+                        color: Color(0xFFC3C3C3),
+                      ),
+                      alignLabelWithHint: true,
+                    ),
+                  ),
+                ),
                 const SizedBox(height: 5.0),
                 Padding(
                   padding:
@@ -430,38 +582,6 @@ class _CreateEventPageState extends State<CreateEventPage> {
                       alignLabelWithHint: true,
                     ),
                   ),
-                ),
-                const SizedBox(height: 15.0),
-                Padding(
-                  padding: const EdgeInsets.only(left: 30.0, right: 30.0),
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      const Text(
-                        'Guest List Visibility',
-                        style: TextStyle(
-                          fontFamily: 'Poppins',
-                          fontSize: 18.0,
-                          fontWeight: FontWeight.w500,
-                          color: Color(0xFF5B5F62),
-                        ),
-                      ),
-                      SwitcherButton(
-                        onColor: const Color(0xFF5B5F62),
-                        offColor: const Color(0xFFC3C3C3),
-                        value: isGuestListVisible,
-                        onChange: (value) {
-                          setState(() {
-                            isGuestListVisible = value;
-                          });
-                        },
-                      ),
-                    ],
-                  ),
-                ),
-                // const SizedBox(height: 5.0),
-                const Padding(
-                  padding: EdgeInsets.all(16.0),
                 ),
               ],
             ),

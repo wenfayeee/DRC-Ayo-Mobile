@@ -43,7 +43,7 @@ class _BottomNavPlaceholderState extends State<BottomNavPlaceholder>
     return Scaffold(
       body: TabBarView(
         controller: _tabController,
-        children: [
+        children: <Widget>[
           HomePage(token: widget.token),
           CreateEventPage(token: widget.token),
           ProfilePage(),

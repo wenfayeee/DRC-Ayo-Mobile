@@ -42,7 +42,7 @@ class _ProfilePageState extends State<ProfilePage> {
   }
 
   void _logout() async {
-    // Clear the authentication token from shared preferences or any other storage mechanism you are using
+    // Clear the authentication token from shared preferences
     SharedPreferences prefs = await SharedPreferences.getInstance();
     await prefs.remove('token');
 
@@ -91,12 +91,12 @@ class _ProfilePageState extends State<ProfilePage> {
                   width: 276,
                   height: 70,
                   decoration: BoxDecoration(
-                    color: Color.fromARGB(57, 174, 153, 77),
+                    color: const Color.fromARGB(57, 174, 153, 77),
                     borderRadius: BorderRadius.circular(10),
                     border:
                         Border.all(color: const Color(0xFFB3AE994D), width: 3),
                   ),
-                  child: Row(
+                  child: const Row(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
                       Column(
@@ -104,7 +104,7 @@ class _ProfilePageState extends State<ProfilePage> {
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           Row(
-                            children: const [
+                            children: [
                               SizedBox(width: 10),
                               Icon(
                                 Icons.person,
@@ -123,9 +123,9 @@ class _ProfilePageState extends State<ProfilePage> {
                               ),
                             ],
                           ),
-                          const SizedBox(height: 5),
+                          SizedBox(height: 5),
                           Row(
-                            children: const [
+                            children: [
                               SizedBox(width: 10),
                               Icon(
                                 Icons.email,

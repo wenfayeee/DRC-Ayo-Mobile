@@ -1,14 +1,14 @@
 import 'package:event_management_app/View/pages/profile_page.dart';
 import 'package:event_management_app/View/pages/error_page.dart';
 import 'package:event_management_app/View/pages/create_event_page.dart';
-import 'package:event_management_app/View/pages/reset_password_page.dart';
+import 'package:event_management_app/View/pages/forgot_password_page.dart';
 import 'package:event_management_app/View/pages/home_page.dart';
 import 'package:event_management_app/View/pages/signin_page.dart';
 import 'package:event_management_app/View/pages/signup_page.dart';
 import 'package:event_management_app/View/pages/splashscreen.dart';
 import 'package:event_management_app/View/pages/edit_profile_page.dart';
 import 'package:event_management_app/View/pages/event_history_page.dart';
-import 'package:event_management_app/View/pages/reset_profile_page.dart';
+import 'package:event_management_app/View/pages/reset_password_page.dart';
 import 'package:event_management_app/View/widgets/bottom_nav_placeholder.dart';
 import 'package:flutter/material.dart';
 import 'package:jwt_decoder/jwt_decoder.dart';
@@ -86,7 +86,7 @@ class _MainAppState extends State<MainApp> {
         '/forgotPwd': (context) => const ForgotPwdPage(),
         '/eventHist': (context) => EventHistoryPage(),
         '/editProfile': (context) => EditProfilePage(),
-        '/resetProfile': (context) => ResetProfilePage(),
+        '/resetPassword': (context) => ResetPasswordPage(),
         '/navigator': (context) => BottomNavPlaceholder(token: widget.token),
         '/error': (context) => const ErrorPage(),
       },
