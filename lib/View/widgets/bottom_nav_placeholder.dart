@@ -24,13 +24,13 @@ class _BottomNavPlaceholderState extends State<BottomNavPlaceholder>
   void initState() {
     super.initState();
     _tabController = TabController(length: 3, vsync: this);
-    _tabController.addListener(() {
-      if (_tabController.indexIsChanging) {
-        setState(() {
-          _currentIndex = _tabController.index;
-        });
-      }
-    });
+    // _tabController.addListener(() {
+    //   if (_tabController.indexIsChanging) {
+    //     setState(() {
+    //       _currentIndex = _tabController.index;
+    //     });
+    //   }
+    // });
   }
 
   @override
@@ -57,6 +57,7 @@ class _BottomNavPlaceholderState extends State<BottomNavPlaceholder>
         ],
       ),
       bottomNavigationBar: BottomNavBar(
+        tabController: _tabController,
         currentIndex: _currentIndex,
         onTap: _onItemTapped,
       ),
