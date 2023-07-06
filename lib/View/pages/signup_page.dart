@@ -29,6 +29,15 @@ class _SignUpPageState extends State<SignUpPage> {
   bool _isLoading = false;
   bool _isNotValidate = false;
 
+  @override
+  void dispose() {
+    super.dispose();
+    _newUserNameController.dispose();
+    _newUserEmailController.dispose();
+    _newUserPasswordController.dispose();
+    _confirmPasswordController.dispose();
+  }
+
   void registerUser(BuildContext context) async {
     if (_formKey.currentState?.validate() ?? false) {
       var regBody = {
@@ -309,9 +318,6 @@ class _SignUpPageState extends State<SignUpPage> {
                             }
                             if (!value.contains(RegExp(r'[A-Z]'))) {
                               return 'Password must contain at least \none uppercase letter';
-                            }
-                            if (!value.contains(RegExp(r'[a-z]'))) {
-                              return 'Password must contain at least \none lowercase letter';
                             }
                             if (!value.contains(RegExp(r'[0-9]'))) {
                               return 'Password must contain at least \none numeric digit';

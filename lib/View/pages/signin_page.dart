@@ -26,6 +26,13 @@ class _SignInPageState extends State<SignInPage> {
   bool _isLoading = false;
   bool _isNotValidate = false;
 
+  @override
+  void dispose() {
+    super.dispose();
+    _emailController.dispose();
+    _passwordController.dispose();
+  }
+
   void loginUser() async {
     if (_emailController.text.isNotEmpty &&
         _passwordController.text.isNotEmpty) {
