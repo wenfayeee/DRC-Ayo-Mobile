@@ -9,6 +9,7 @@ import 'package:event_management_app/View/pages/splashscreen.dart';
 import 'package:event_management_app/View/pages/edit_profile_page.dart';
 import 'package:event_management_app/View/pages/event_history_page.dart';
 import 'package:event_management_app/View/pages/reset_password_page.dart';
+import 'package:event_management_app/View/pages/event_details_page.dart';
 import 'package:event_management_app/View/widgets/bottom_nav_placeholder.dart';
 import 'package:flutter/material.dart';
 import 'package:jwt_decoder/jwt_decoder.dart';
@@ -16,6 +17,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 
 bool isTokenValid(String? token) {
   if (token == null) {
+
     return false;
   }
 
@@ -67,7 +69,7 @@ class _MainAppState extends State<MainApp> {
     homeRoute = widget.token != null && isTokenValid(widget.token!)
         ? '/navigator'
         : '/signin';
-  }
+  }         
 
   @override
   Widget build(BuildContext context) {
@@ -87,6 +89,7 @@ class _MainAppState extends State<MainApp> {
         '/eventHist': (context) => EventHistoryPage(),
         '/editProfile': (context) => EditProfilePage(),
         '/resetPassword': (context) => ResetPasswordPage(),
+        '/eventDetails': (context) => EventDetailsPage(),
         '/navigator': (context) => BottomNavPlaceholder(token: widget.token),
         '/error': (context) => const ErrorPage(),
       },
