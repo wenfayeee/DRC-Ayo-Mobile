@@ -3,14 +3,12 @@ import 'package:flutter/material.dart';
 
 class BottomNavBar extends StatefulWidget {
   final int currentIndex;
-  final TabController tabController;
   final ValueChanged<int> onTap;
 
   const BottomNavBar({
     Key? key,
     required this.currentIndex,
     required this.onTap,
-    required this.tabController,
   }) : super(key: key);
 
   @override
@@ -18,10 +16,27 @@ class BottomNavBar extends StatefulWidget {
 }
 
 class _BottomNavBarState extends State<BottomNavBar> {
+  late int _currentIndex;
+
+  @override
+  void initState() {
+    super.initState();
+    _currentIndex = widget.currentIndex;
+  }
+
+  @override
+  void didUpdateWidget(covariant BottomNavBar oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    if (widget.currentIndex != _currentIndex) {
+      setState(() {
+        _currentIndex = widget.currentIndex;
+      });
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return ConvexAppBar(
-      controller: widget.tabController,
       style: TabStyle.react,
       items: const [
         TabItem(
@@ -35,7 +50,7 @@ class _BottomNavBarState extends State<BottomNavBar> {
         ),
       ],
       backgroundColor: const Color(0xFF202926),
-      initialActiveIndex: 0,
+      initialActiveIndex: _currentIndex,
       onTap: widget.onTap,
     );
   }
