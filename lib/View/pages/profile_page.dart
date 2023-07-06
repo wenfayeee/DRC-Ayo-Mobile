@@ -16,6 +16,11 @@ class _ProfilePageState extends State<ProfilePage> {
   File? _image;
   final ImagePickerPlatform _picker = ImagePickerPlatform.instance;
 
+  @override
+  void initState() {
+    super.initState();
+  }
+
   Future<void> _pickImage() async {
     if (_picker is ImagePickerAndroid) {
       (_picker as ImagePickerAndroid).useAndroidPhotoPicker = true;
@@ -34,7 +39,7 @@ class _ProfilePageState extends State<ProfilePage> {
   }
 
   void _navigateToResetPassword() {
-    Navigator.pushNamed(context, '/resetProfile');
+    Navigator.pushNamed(context, '/resetPassword');
   }
 
   void _navigateToEventHistory() {
@@ -75,7 +80,7 @@ class _ProfilePageState extends State<ProfilePage> {
                 onTap: _pickImage,
                 child: CircleAvatar(
                   radius: 90,
-                  backgroundColor: const Color(0xFFB3AE994D),
+                  backgroundColor: const Color(0xFFB3AE99),
                   child: CircleAvatar(
                     radius: 85,
                     backgroundImage: _image != null ? FileImage(_image!) : null,
@@ -94,7 +99,7 @@ class _ProfilePageState extends State<ProfilePage> {
                     color: const Color.fromARGB(57, 174, 153, 77),
                     borderRadius: BorderRadius.circular(10),
                     border:
-                        Border.all(color: const Color(0xFFB3AE994D), width: 3),
+                        Border.all(color: const Color(0xFFB3AE99), width: 3),
                   ),
                   child: const Row(
                     mainAxisAlignment: MainAxisAlignment.center,

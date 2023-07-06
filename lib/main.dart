@@ -29,8 +29,6 @@ bool isTokenValid(String? token) {
     return currentDate.isBefore(expirationDate);
   }
   print("$expirationTimestamp");
-  print("why");
-
   return false;
 }
 
@@ -51,7 +49,7 @@ class MainApp extends StatefulWidget {
 
   const MainApp({
     Key? key,
-    this.token,
+    required this.token,
   }) : super(key: key);
 
   @override
@@ -81,7 +79,7 @@ class _MainAppState extends State<MainApp> {
         '/signin': (context) => const SignInPage(),
         '/signup': (context) => const SignUpPage(),
         '/home': (context) => HomePage(token: widget.token),
-        '/create': (context) => CreateEventPage(token: widget.token),
+        '/create': (context) => CreateEventPage(token: widget.token!),
         '/profile': (context) => const ProfilePage(),
         '/forgotPwd': (context) => const ForgotPwdPage(),
         '/eventHist': (context) => EventHistoryPage(),
