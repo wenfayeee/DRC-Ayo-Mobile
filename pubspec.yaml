@@ -5,7 +5,6 @@ version: 0.1.0
 environment:
   sdk: ">=2.19.6 <3.0.0"
 dependencies:
-  flutter_icons: ^1.1.0
   convex_bottom_bar: ^3.2.0
   cupertino_icons: ^1.0.5
   equatable: ^2.0.5

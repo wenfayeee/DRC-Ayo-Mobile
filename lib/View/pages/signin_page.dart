@@ -34,42 +34,50 @@ class _SignInPageState extends State<SignInPage> {
   }
 
   void loginUser() async {
-    if (_emailController.text.isNotEmpty &&
-        _passwordController.text.isNotEmpty) {
-      var reqBody = {
-        "email": _emailController.text,
-        "password": _passwordController.text
-      };
-      try {
-        var response = await http.post(
-          Uri.parse(login),
-          headers: {
-            "Content-Type": "application/json; charset=utf-8",
-          },
-          body: jsonEncode(reqBody),
-        );
-        var jsonResponse = jsonDecode(response.body) as Map<String, dynamic>;
-        var statusCode = jsonResponse['statusCode'] as int?;
+    if (_formKey.currentState?.validate() ?? false) {
+      if (_emailController.text.isNotEmpty &&
+          _passwordController.text.isNotEmpty) {
+        var reqBody = {
+          "email": _emailController.text,
+          "password": _passwordController.text
+        };
+        try {
+          var response = await http.post(
+            Uri.parse(login),
+            headers: {
+              "Content-Type": "application/json; charset=utf-8",
+            },
+            body: jsonEncode(reqBody),
+          );
+          var jsonResponse = jsonDecode(response.body) as Map<String, dynamic>;
+          var statusCode = jsonResponse['statusCode'] as int?;
 
-        if (response.statusCode == 200) {
-          // Successful authentication
-          var token = jsonResponse['token'] as String?;
-          print("$token");
-          // Store token locally
-          SharedPreferences prefs = await SharedPreferences.getInstance();
-          await prefs.setString('token', token!);
-          Navigator.pushNamed(context, '/navigator');
-        } else if (response.statusCode == 401) {
-          // Invalid password
-          print('Invalid password');
-        } else if (response.statusCode == 404) {
-          // User not found
-          print('User not found');
-        } else {
-          print('Something went wrong');
+          if (response.statusCode == 200) {
+            // Successful authentication
+            var token = jsonResponse['token'] as String?;
+            print("$token");
+            // Store token locally
+            SharedPreferences prefs = await SharedPreferences.getInstance();
+            await prefs.setString('token', token!);
+            Navigator.pushNamed(context, '/navigator');
+            // ScaffoldMessenger.of(context).showSnackBar(
+            //   const SnackBar(
+            //     content: Text("You're logged as {widget.email}"),
+            //     backgroundColor: Colors.green,
+            //   ),
+            // );
+          } else if (response.statusCode == 401) {
+            // Invalid password
+            print('Invalid password');
+          } else if (response.statusCode == 404) {
+            // User not found
+            print('User not found');
+          } else {
+            print('Something went wrong');
+          }
+        } catch (error) {
+          print('Error: $error');
         }
-      } catch (error) {
-        print('Error: $error');
       }
     }
   }

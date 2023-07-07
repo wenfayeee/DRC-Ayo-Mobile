@@ -17,7 +17,6 @@ import 'package:shared_preferences/shared_preferences.dart';
 
 bool isTokenValid(String? token) {
   if (token == null) {
-
     return false;
   }
 
@@ -31,8 +30,6 @@ bool isTokenValid(String? token) {
     return currentDate.isBefore(expirationDate);
   }
   print("$expirationTimestamp");
-  print("why");
-
   return false;
 }
 
@@ -53,7 +50,7 @@ class MainApp extends StatefulWidget {
 
   const MainApp({
     Key? key,
-    this.token,
+    required this.token,
   }) : super(key: key);
 
   @override
@@ -69,7 +66,7 @@ class _MainAppState extends State<MainApp> {
     homeRoute = widget.token != null && isTokenValid(widget.token!)
         ? '/navigator'
         : '/signin';
-  }         
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -78,18 +75,19 @@ class _MainAppState extends State<MainApp> {
       theme: ThemeData(primarySwatch: Colors.grey, fontFamily: 'Poppins'),
       initialRoute: homeRoute,
       routes: {
-        // Your other routes
+        // Other page routes
         '/splash': (context) => const SplashScreenPage(),
         '/signin': (context) => const SignInPage(),
         '/signup': (context) => const SignUpPage(),
-        '/home': (context) => HomePage(token: widget.token),
-        '/create': (context) => CreateEventPage(token: widget.token),
+        '/home': (context) => HomePage(token: widget.token!),
+        '/create': (context) => CreateEventPage(token: widget.token!),
         '/profile': (context) => const ProfilePage(),
         '/forgotPwd': (context) => const ForgotPwdPage(),
         '/eventHist': (context) => EventHistoryPage(),
         '/editProfile': (context) => EditProfilePage(),
         '/resetPassword': (context) => ResetPasswordPage(),
-        '/eventDetails': (context) => EventDetailsPage(),
+        // '/eventDetails': (context) => EventDetailsPage(token: widget.token!),
+        '/eventDetails': (context) => EventDetailsPage(token: widget.token!),
         '/navigator': (context) => BottomNavPlaceholder(token: widget.token),
         '/error': (context) => const ErrorPage(),
       },

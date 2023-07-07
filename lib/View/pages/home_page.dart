@@ -1,4 +1,3 @@
-import 'package:event_management_app/Functions/config.dart';
 import 'package:flutter/material.dart';
 import 'package:jwt_decoder/jwt_decoder.dart';
 import 'package:toggle_switch/toggle_switch.dart';
