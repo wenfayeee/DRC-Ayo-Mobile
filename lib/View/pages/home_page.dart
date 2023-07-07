@@ -1,17 +1,52 @@
 import 'package:flutter/material.dart';
 import 'package:jwt_decoder/jwt_decoder.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:toggle_switch/toggle_switch.dart';
 import 'package:google_fonts/google_fonts.dart';
 
 class HomePage extends StatefulWidget {
-  const HomePage({Key? key, required token}) : super(key: key);
+  final String token;
+  const HomePage({required this.token, Key? key}) : super(key: key);
 
   @override
   State<HomePage> createState() => _HomePageState();
 }
 
 class _HomePageState extends State<HomePage> {
+  String? token;
+  String? email;
+
   int selectedIndex = 0;
+
+  @override
+  void initState() {
+    print("hi" + "$widget");
+    super.initState();
+    getTokenFromSharedPrefs();
+  }
+
+  void getTokenFromSharedPrefs() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    String? storedToken = prefs.getString('token');
+
+    if (storedToken != null) {
+      setState(() {
+        token = storedToken;
+        print(token);
+      });
+      decodeToken();
+    }
+  }
+
+  void decodeToken() {
+    Map<String, dynamic>? jwtDecodedToken;
+    if (token != null) {
+      jwtDecodedToken = JwtDecoder.decode(token!);
+      if (jwtDecodedToken.containsKey('email')) {
+        email = jwtDecodedToken['email'] as String?;
+      }
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -43,7 +78,7 @@ class _HomePageState extends State<HomePage> {
                       minWidth: 120.0,
                       minHeight: 50.0,
                       initialLabelIndex: selectedIndex,
-                      activeBgColor: [const Color(0xFF2A4F92)],
+                      activeBgColor: const [Color(0xFF2A4F92)],
                       inactiveBgColor: const Color(0xFFC3C3C4),
                       activeFgColor: Colors.white,
                       inactiveFgColor: Colors.grey[900],
