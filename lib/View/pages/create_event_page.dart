@@ -28,15 +28,13 @@ class _CreateEventPageState extends State<CreateEventPage> {
   final _venueController = TextEditingController();
   final _descriptionController = TextEditingController();
   final _rsvpDateController = TextEditingController();
-  // final _rsvpTimeController = TextEditingController();
+  final _rsvpTimeController = TextEditingController();
   final _eventCodeController = TextEditingController();
   final _inviteeEmailController = TextEditingController();
 
-  bool isGuestListVisible = false;
-
   @override
   void initState() {
-    print("hi" + "$widget.token");
+    print("hi" + "$widget");
     super.initState();
     getTokenFromSharedPrefs();
   }
@@ -55,7 +53,7 @@ class _CreateEventPageState extends State<CreateEventPage> {
   }
 
   void decodeToken() {
-    Map<dynamic, dynamic>? jwtDecodedToken;
+    Map<String, dynamic>? jwtDecodedToken;
     if (token != null) {
       jwtDecodedToken = JwtDecoder.decode(token!);
       if (jwtDecodedToken.containsKey('email')) {
@@ -73,7 +71,7 @@ class _CreateEventPageState extends State<CreateEventPage> {
     _venueController.dispose();
     _descriptionController.dispose();
     _rsvpDateController.dispose();
-    // _rsvpTimeController.dispose();
+    _rsvpTimeController.dispose();
     _eventCodeController.dispose();
     _inviteeEmailController.dispose();
   }
@@ -175,6 +173,7 @@ class _CreateEventPageState extends State<CreateEventPage> {
           _venueController.text.isNotEmpty &&
           _descriptionController.text.isNotEmpty &&
           _rsvpDateController.text.isNotEmpty &&
+          _rsvpTimeController.text.isNotEmpty &&
           _eventCodeController.text.isNotEmpty &&
           _inviteeEmailController.text.isNotEmpty) {
         var inviteeEmail = _inviteeEmailController.text;
@@ -185,8 +184,8 @@ class _CreateEventPageState extends State<CreateEventPage> {
           "event_time": _timeController.text,
           "event_address": _venueController.text,
           "event_detail": _descriptionController.text,
-          "event_rsvp_before": _rsvpDateController.text,
-          // "rsvpTime": _rsvpTimeController.text,
+          "event_rsvp_before_date": _rsvpDateController.text,
+          "event_rsvp_before_time": _rsvpTimeController.text,
           "event_code": _eventCodeController.text,
           "invitee_email": inviteeEmailList,
           "email": email,
@@ -215,6 +214,7 @@ class _CreateEventPageState extends State<CreateEventPage> {
             _venueController.clear();
             _descriptionController.clear();
             _rsvpDateController.clear();
+            _rsvpTimeController.clear();
             _eventCodeController.clear();
             _inviteeEmailController.clear();
 
@@ -586,81 +586,81 @@ class _CreateEventPageState extends State<CreateEventPage> {
                           ),
                         ),
                       ),
-                      // Expanded(
-                      //   child: Padding(
-                      //     padding:
-                      //         const EdgeInsets.only(left: 5.0, right: 30.0),
-                      //     child: TextFormField(
-                      //       readOnly: true,
-                      //       onTap: () async {
-                      //         final currentTime = DateTime.now();
-                      //         final selectedTime =
-                      //             await showCupertinoModalPopup(
-                      //           context: context,
-                      //           builder: (BuildContext context) {
-                      //             return Container(
-                      //               color: const Color(0xFFFFFFFF),
-                      //               height: 300.0,
-                      //               child: CupertinoDatePicker(
-                      //                 mode: CupertinoDatePickerMode.time,
-                      //                 initialDateTime: currentTime,
-                      //                 onDateTimeChanged: (DateTime newTime) {
-                      //                   setState(() {
-                      //                     final formattedTime =
-                      //                         DateFormat('HH:mm:ss')
-                      //                             .format(newTime);
-                      //                     _rsvpTimeController.text =
-                      //                         formattedTime.toString();
-                      //                   });
-                      //                 },
-                      //               ),
-                      //             );
-                      //           },
-                      //         );
-                      //         if (selectedTime != null) {
-                      //           setState(() {
-                      //             final formattedTime = DateFormat('HH:mm:ss')
-                      //                 .format(selectedTime);
-                      //             _rsvpTimeController.text =
-                      //                 formattedTime.toString();
-                      //           });
-                      //         }
-                      //       },
-                      //       validator: (value) {
-                      //         if (value == null || value.isEmpty) {
-                      //           return 'Please enter time.';
-                      //         }
-                      //         return null;
-                      //       },
-                      //       controller: _rsvpTimeController,
-                      //       keyboardType: TextInputType.datetime,
-                      //       style: GoogleFonts.poppins(
-                      //         fontSize: 18.0,
-                      //         fontWeight: FontWeight.w500,
-                      //         color: const Color(0xFF000000),
-                      //       ),
-                      //       decoration: const InputDecoration(
-                      //         filled: true,
-                      //         fillColor: Color(0xFFFFFFFF),
-                      //         hintText: 'RSVP Time',
-                      //         contentPadding: EdgeInsets.all(12.0),
-                      //         border: OutlineInputBorder(
-                      //           borderSide:
-                      //               BorderSide(color: Color(0xFFC3C3C3)),
-                      //           borderRadius:
-                      //               BorderRadius.all(Radius.circular(15.0)),
-                      //         ),
-                      //         hintStyle: TextStyle(
-                      //           fontFamily: 'Poppins',
-                      //           fontSize: 18.0,
-                      //           fontWeight: FontWeight.w500,
-                      //           color: Color(0xFFC3C3C3),
-                      //         ),
-                      //         alignLabelWithHint: true,
-                      //       ),
-                      //     ),
-                      //   ),
-                      // ),
+                      Expanded(
+                        child: Padding(
+                          padding:
+                              const EdgeInsets.only(left: 5.0, right: 30.0),
+                          child: TextFormField(
+                            readOnly: true,
+                            onTap: () async {
+                              final currentTime = DateTime.now();
+                              final selectedTime =
+                                  await showCupertinoModalPopup(
+                                context: context,
+                                builder: (BuildContext context) {
+                                  return Container(
+                                    color: const Color(0xFFFFFFFF),
+                                    height: 300.0,
+                                    child: CupertinoDatePicker(
+                                      mode: CupertinoDatePickerMode.time,
+                                      initialDateTime: currentTime,
+                                      onDateTimeChanged: (DateTime newTime) {
+                                        setState(() {
+                                          final formattedTime =
+                                              DateFormat('HH:mm:ss')
+                                                  .format(newTime);
+                                          _rsvpTimeController.text =
+                                              formattedTime.toString();
+                                        });
+                                      },
+                                    ),
+                                  );
+                                },
+                              );
+                              if (selectedTime != null) {
+                                setState(() {
+                                  final formattedTime = DateFormat('HH:mm:ss')
+                                      .format(selectedTime);
+                                  _rsvpTimeController.text =
+                                      formattedTime.toString();
+                                });
+                              }
+                            },
+                            validator: (value) {
+                              if (value == null || value.isEmpty) {
+                                return 'Please enter time.';
+                              }
+                              return null;
+                            },
+                            controller: _rsvpTimeController,
+                            keyboardType: TextInputType.datetime,
+                            style: GoogleFonts.poppins(
+                              fontSize: 18.0,
+                              fontWeight: FontWeight.w500,
+                              color: const Color(0xFF000000),
+                            ),
+                            decoration: const InputDecoration(
+                              filled: true,
+                              fillColor: Color(0xFFFFFFFF),
+                              hintText: 'RSVP Time',
+                              contentPadding: EdgeInsets.all(12.0),
+                              border: OutlineInputBorder(
+                                borderSide:
+                                    BorderSide(color: Color(0xFFC3C3C3)),
+                                borderRadius:
+                                    BorderRadius.all(Radius.circular(15.0)),
+                              ),
+                              hintStyle: TextStyle(
+                                fontFamily: 'Poppins',
+                                fontSize: 18.0,
+                                fontWeight: FontWeight.w500,
+                                color: Color(0xFFC3C3C3),
+                              ),
+                              alignLabelWithHint: true,
+                            ),
+                          ),
+                        ),
+                      ),
                     ],
                   ),
                   const SizedBox(height: 5.0),

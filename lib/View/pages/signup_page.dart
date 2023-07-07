@@ -274,7 +274,7 @@ class _SignUpPageState extends State<SignUpPage> {
                           keyboardType: TextInputType.text,
                           style: GoogleFonts.poppins(
                               fontSize: 18.0,
-                              fontWeight: FontWeight.w500,
+                              fontWeight: FontWeight.w300,
                               color: const Color(0xff202926)),
                           decoration: const InputDecoration(
                             filled: true,
@@ -335,7 +335,7 @@ class _SignUpPageState extends State<SignUpPage> {
                           keyboardType: TextInputType.text,
                           style: GoogleFonts.poppins(
                               fontSize: 18.0,
-                              fontWeight: FontWeight.w500,
+                              fontWeight: FontWeight.w300,
                               color: const Color(0xFF000000)),
                           decoration: InputDecoration(
                             filled: true,
@@ -400,7 +400,7 @@ class _SignUpPageState extends State<SignUpPage> {
                           keyboardType: TextInputType.text,
                           style: GoogleFonts.poppins(
                               fontSize: 18.0,
-                              fontWeight: FontWeight.w500,
+                              fontWeight: FontWeight.w300,
                               color: const Color(0xFF000000)),
                           decoration: InputDecoration(
                             filled: true,
