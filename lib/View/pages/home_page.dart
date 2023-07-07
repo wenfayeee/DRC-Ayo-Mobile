@@ -1,7 +1,7 @@
 import 'package:event_management_app/Functions/config.dart';
 import 'package:flutter/material.dart';
 import 'package:jwt_decoder/jwt_decoder.dart';
-import 'package:fk_toggle/fk_toggle.dart';
+import 'package:toggle_switch/toggle_switch.dart';
 import 'package:google_fonts/google_fonts.dart';
 
 class HomePage extends StatefulWidget {
@@ -40,15 +40,25 @@ class _HomePageState extends State<HomePage> {
                 child: Column(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
-                    FkToggle(
-                      width: 120,
-                      height: 50,
-                      labels: const ['Upcoming', 'Hosted'],
-                      selectedColor: const Color(0xFF2A4F92),
-                      backgroundColor: const Color(0xFFC3C3C4),
-                      onSelected: (int index, FkToggle toggle) {
+                    ToggleSwitch(
+                      minWidth: 120.0,
+                      minHeight: 50.0,
+                      initialLabelIndex: selectedIndex,
+                      activeBgColor: [const Color(0xFF2A4F92)],
+                      inactiveBgColor: const Color(0xFFC3C3C4),
+                      activeFgColor: Colors.white,
+                      inactiveFgColor: Colors.grey[900],
+                      labels: const ['Invited', 'Hosted'],
+                      customTextStyles: [
+                        TextStyle(
+                          fontSize: 15.0,
+                          fontWeight: FontWeight.w600,
+                          fontFamily: GoogleFonts.poppins().fontFamily,
+                        ),
+                      ],
+                      onToggle: (index) {
                         setState(() {
-                          selectedIndex = index;
+                          selectedIndex = index!;
                         });
                       },
                     ),
@@ -62,7 +72,12 @@ class _HomePageState extends State<HomePage> {
                           scrollDirection: Axis.horizontal,
                           child: Row(
                             children: [
-                              _buildEventContainer(containerWidth),
+                              GestureDetector(
+                                onTap: () {
+                                  Navigator.pushNamed(context, '/eventDetails');
+                                },
+                                child: _buildEventContainer(containerWidth),
+                              ),
                             ],
                           ),
                         );

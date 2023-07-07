@@ -101,7 +101,7 @@ class _ProfilePageState extends State<ProfilePage> {
                     border:
                         Border.all(color: const Color(0xFFB3AE99), width: 3),
                   ),
-                  child: const Row(
+                  child: Row(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
                       Column(
