@@ -87,7 +87,7 @@ class _MainAppState extends State<MainApp> {
         '/editProfile': (context) => EditProfilePage(),
         '/resetPassword': (context) => ResetPasswordPage(),
         // '/eventDetails': (context) => EventDetailsPage(token: widget.token!),
-        '/eventDetails': (context) => EventDetailsPage(token: widget.token!),
+        // '/eventDetails': (context) => EventDetailsPage(token: widget.token!),
         '/navigator': (context) => BottomNavPlaceholder(token: widget.token),
         '/error': (context) => const ErrorPage(),
       },

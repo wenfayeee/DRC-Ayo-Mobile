@@ -1,12 +1,39 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:pushable_button/pushable_button.dart';
+import '../../Functions/config.dart';
+import 'package:http/http.dart' as http;
+import 'package:flutter/material.dart';
 
 class ForgotPwdPage extends StatefulWidget {
   const ForgotPwdPage({Key? key}) : super(key: key);
 
   @override
   State<ForgotPwdPage> createState() => _ForgotPwdPageState();
+}
+
+Future<void> sendPasswordResetEmail(String email, BuildContext context) async {
+  try {
+    final url = forget;
+    final response = await http.post(Uri.parse(url), body: {'email': email});
+
+    if (response.statusCode == 200) {
+      showSnackBar(context, 'Reset password email sent successfully', true);
+    } else {
+      showSnackBar(context, 'Failed to send reset password email', false);
+    }
+  } catch (error) {
+    showSnackBar(context, 'An error occurred', false);
+  }
+}
+
+void showSnackBar(BuildContext context, String message, bool isSuccess) {
+  ScaffoldMessenger.of(context).showSnackBar(
+    SnackBar(
+      content: Text(message),
+      backgroundColor: isSuccess ? Colors.green : Colors.red,
+    ),
+  );
 }
 
 class _ForgotPwdPageState extends State<ForgotPwdPage> {
@@ -90,6 +117,11 @@ class _ForgotPwdPageState extends State<ForgotPwdPage> {
                   child: PushableButton(
                     onPressed: () {
                       // to implement function to send email for password reset
+                      // Retrieve the email entered by the user
+                        final email = _resetPwdEmailController.text;
+
+                        // Make the API call to send the password reset email
+                        sendPasswordResetEmail(email, context);
                     },
                     hslColor: HSLColor.fromColor(
                       const Color(0xFF1E3765),

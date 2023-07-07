@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:pushable_button/pushable_button.dart';
+import '../../Functions/config.dart';
+import 'package:http/http.dart' as http;
 
 class ResetPasswordPage extends StatefulWidget {
   @override
@@ -27,6 +29,26 @@ class _ResetPasswordPageState extends State<ResetPasswordPage> {
 
   void resetPassword() async {
     // To implement reset password function
+    final oldPassword = _oldPasswordController.text;
+    final newPassword = _newPasswordController.text;
+
+    final response = await http.post(
+      Uri.parse(update), // Backend endpoint URL from config.dart
+      body: {
+        'userId': 'your_user_id_here',
+        'newPassword': newPassword,
+      },
+    );
+
+    if (response.statusCode == 200) {
+      // Password update successful
+      // Handle any UI changes or navigation you want to perform
+      print("success");
+    } else {
+      // Password update failed
+      // Handle error, show error message, etc.
+      print("fail");
+    }
   }
 
   @override
@@ -183,6 +205,7 @@ class _ResetPasswordPageState extends State<ResetPasswordPage> {
                       PushableButton(
                         onPressed: () {
                           // Handle reset password logic
+                          resetPassword();
                         },
                         hslColor: HSLColor.fromColor(const Color(0xFF1E3765)),
                         shadow: const BoxShadow(
