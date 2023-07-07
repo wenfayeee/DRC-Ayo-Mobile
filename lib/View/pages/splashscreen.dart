@@ -28,11 +28,11 @@ class SplashScreenPage extends StatelessWidget {
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
                 Padding(
-                  padding: const EdgeInsets.only(top: 95.0),
+                  padding: const EdgeInsets.only(top: 120.0),
                   child: Image.asset(
-                    'assets/images/logo.png',
-                    width: 387.51,
-                    height: 256,
+                    'assets/images/Ayo_logo.png',
+                    width: 245.22,
+                    height: 162.0,
                   ),
                 ),
                 const SizedBox(height: 20.0),
@@ -41,13 +41,13 @@ class SplashScreenPage extends StatelessWidget {
                   style: GoogleFonts.poppins(
                       color: const Color(0xFF1E3765),
                       fontWeight: FontWeight.w600,
-                      fontStyle: FontStyle.italic,
-                      fontSize: 16),
+                      // fontStyle: FontStyle.italic,
+                      fontSize: 18),
                 ),
-                const SizedBox(height: 120.0),
+                const SizedBox(height: 300.0),
                 Padding(
-                  padding:
-                      const EdgeInsets.only(top: 10.0, left: 30.0, right: 30.0),
+                  padding: const EdgeInsets.only(
+                      bottom: 10.0, left: 30.0, right: 30.0),
                   child: PushableButton(
                     onPressed: () {
                       Navigator.pushNamed(context, '/signin');
@@ -71,8 +71,8 @@ class SplashScreenPage extends StatelessWidget {
                 ),
                 const SizedBox(height: 5.0),
                 Padding(
-                  padding:
-                      const EdgeInsets.only(top: 10.0, left: 30.0, right: 30.0),
+                  padding: const EdgeInsets.only(
+                      bottom: 130.0, left: 30.0, right: 30.0),
                   child: PushableButton(
                     onPressed: () {
                       Navigator.pushNamed(context, '/signup');

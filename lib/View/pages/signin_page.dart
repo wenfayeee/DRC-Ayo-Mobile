@@ -248,7 +248,7 @@ class _SignInPageState extends State<SignInPage> {
                       },
                     ),
                   ),
-                  const SizedBox(height: 0.0),
+                  const SizedBox(height: 5.0),
                   Align(
                     alignment: Alignment.centerRight,
                     child: Row(
@@ -256,6 +256,7 @@ class _SignInPageState extends State<SignInPage> {
                       children: [
                         InkWell(
                           onTap: () {
+                            //test
                             Navigator.pushNamed(context, '/forgotPwd');
                           },
                           child: Padding(
