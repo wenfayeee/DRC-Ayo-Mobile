@@ -204,9 +204,6 @@ class _CreateEventPageState extends State<CreateEventPage> {
           var statusCode = jsonResponse['statusCode'] as int?;
 
           print(regBody);
-          print('process start');
-          print(_eventCodeController.text);
-          print(_titleController.text);
           if (response.statusCode == 201) {
             _titleController.clear();
             _dateController.clear();

@@ -21,6 +21,11 @@ class _ProfilePageState extends State<ProfilePage> {
     super.initState();
   }
 
+  @override
+  void dispose() {
+    super.dispose();
+  }
+
   Future<void> _pickImage() async {
     if (_picker is ImagePickerAndroid) {
       (_picker as ImagePickerAndroid).useAndroidPhotoPicker = true;
@@ -35,7 +40,7 @@ class _ProfilePageState extends State<ProfilePage> {
   }
 
   void _navigateToEditProfile() {
-    Navigator.pushNamed(context, '/editProfile');
+    Navigator.pushNamed(context, '/eventDetails');
   }
 
   void _navigateToResetPassword() {
@@ -101,7 +106,7 @@ class _ProfilePageState extends State<ProfilePage> {
                     border:
                         Border.all(color: const Color(0xFFB3AE99), width: 3),
                   ),
-                  child: Row(
+                  child: const Row(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
                       Column(
