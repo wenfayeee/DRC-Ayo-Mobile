@@ -3,6 +3,7 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:pushable_button/pushable_button.dart';
 import '../../Functions/config.dart';
 import 'package:http/http.dart' as http;
+import 'package:shared_preferences/shared_preferences.dart';
 
 class ResetPasswordPage extends StatefulWidget {
   @override
@@ -28,28 +29,46 @@ class _ResetPasswordPageState extends State<ResetPasswordPage> {
   }
 
   void resetPassword() async {
-    // To implement reset password function
-    final oldPassword = _oldPasswordController.text;
-    final newPassword = _newPasswordController.text;
+  final oldPassword = _oldPasswordController.text;
+  final newPassword = _newPasswordController.text;
 
-    final response = await http.post(
+  SharedPreferences prefs = await SharedPreferences.getInstance();
+  String? storedToken = prefs.getString('token');
+
+  if (storedToken != null) {
+    final response = await http.put(
       Uri.parse(update), // Backend endpoint URL from config.dart
+      headers: {
+        'Authorization': 'Bearer $storedToken',
+      },
       body: {
-        'userId': 'your_user_id_here',
+        'currentPassword': oldPassword,
         'newPassword': newPassword,
       },
     );
 
     if (response.statusCode == 200) {
       // Password update successful
-      // Handle any UI changes or navigation you want to perform
-      print("success");
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text('Password updated successfully'),
+          duration: const Duration(seconds: 3),
+          backgroundColor: Colors.green,
+        ),
+      );
     } else {
       // Password update failed
-      // Handle error, show error message, etc.
-      print("fail");
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text('Failed to update password'),
+          duration: const Duration(seconds: 3),
+          backgroundColor: Colors.red,
+        ),
+      );
     }
   }
+}
+
 
   @override
   Widget build(BuildContext context) {
