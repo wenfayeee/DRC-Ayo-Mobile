@@ -24,7 +24,8 @@ dependencies:
   flutter_animated_button: ^2.0.3
   intl: ^0.18.1
   toggle_switch: ^2.1.0
-  device_calendar: ^4.3.1
+  add_2_calendar: ^2.2.3
+  syncfusion_flutter_calendar: ^22.1.37
 
 dev_dependencies:
   flutter_test:

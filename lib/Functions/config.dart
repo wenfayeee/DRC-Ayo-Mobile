@@ -11,8 +11,8 @@ final logout = url + 'users/logout';
 // Event related configs
 final createEvent = url + 'create_event/add';
 final getEvent = url + 'create_event/get';
-final getEventByEmail = url + 'create_event/email/:email';
-final getEventByInviteeEmail = url + 'create_event/invitee/:invitee_email';
+final getEventByEmail = url + 'create_event/email/';
+final getEventByInviteeEmail = url + 'create_event/invite/';
 final updateEvent = url + 'create_event/update/:event_code';
 final deleteEvent = url + 'create_event/delete/:event_code';
 
