@@ -177,7 +177,7 @@ class _CreateEventPageState extends State<CreateEventPage> {
           _eventCodeController.text.isNotEmpty &&
           _inviteeEmailController.text.isNotEmpty) {
         var inviteeEmail = _inviteeEmailController.text;
-        var inviteeEmailList = [inviteeEmail];
+        var inviteeEmailList = inviteeEmail.split(',').map((e) => e.trim()).toList();
         var regBody = {
           "event_name": _titleController.text,
           "event_date": _dateController.text,
@@ -190,6 +190,7 @@ class _CreateEventPageState extends State<CreateEventPage> {
           "invitee_email": inviteeEmailList,
           "email": email,
         };
+
         try {
           var response = await http.post(
             Uri.parse(createEvent),
