@@ -106,7 +106,7 @@ class _ProfilePageState extends State<ProfilePage> {
                     border:
                         Border.all(color: const Color(0xFFB3AE99), width: 3),
                   ),
-                  child: const Row(
+                  child: Row(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
                       Column(
@@ -114,7 +114,7 @@ class _ProfilePageState extends State<ProfilePage> {
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           Row(
-                            children: [
+                            children: const [
                               SizedBox(width: 10),
                               Icon(
                                 Icons.person,
@@ -133,9 +133,9 @@ class _ProfilePageState extends State<ProfilePage> {
                               ),
                             ],
                           ),
-                          SizedBox(height: 5),
+                          const SizedBox(height: 5),
                           Row(
-                            children: [
+                            children: const [
                               SizedBox(width: 10),
                               Icon(
                                 Icons.email,
