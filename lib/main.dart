@@ -1,3 +1,4 @@
+import 'package:event_management_app/Functions/config.dart';
 import 'package:event_management_app/View/pages/profile_page.dart';
 import 'package:event_management_app/View/pages/error_page.dart';
 import 'package:event_management_app/View/pages/create_event_page.dart';
@@ -86,7 +87,7 @@ class _MainAppState extends State<MainApp> {
         '/eventHist': (context) => EventHistoryPage(),
         '/editProfile': (context) => EditProfilePage(token: widget.token!),
         '/resetPassword': (context) => ResetPasswordPage(),
-        '/eventDetails': (context) => EventDetailsPage(token: widget.token!),
+        '/eventDetails': (context) => EventDetailsPage(token: widget.token!, eventCode: '',),
         '/navigator': (context) => BottomNavPlaceholder(token: widget.token),
         '/error': (context) => const ErrorPage(),
       },

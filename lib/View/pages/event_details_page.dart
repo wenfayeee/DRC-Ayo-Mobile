@@ -2,6 +2,7 @@ import 'dart:convert';
 
 // import 'package:add_2_calendar/add_2_calendar.dart';
 import 'package:event_management_app/Functions/config.dart';
+import 'package:event_management_app/View/pages/home_page.dart';
 import 'package:event_management_app/View/widgets/bottom_nav_placeholder.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
@@ -13,7 +14,11 @@ import 'package:shared_preferences/shared_preferences.dart';
 
 class EventDetailsPage extends StatefulWidget {
   final String? token;
-  const EventDetailsPage({required this.token, Key? key}) : super(key: key);
+  final String eventCode;
+
+  const EventDetailsPage(
+      {required this.token, Key? key, required this.eventCode})
+      : super(key: key);
 
   @override
   State<EventDetailsPage> createState() => _EventDetailsPageState();
@@ -22,6 +27,7 @@ class EventDetailsPage extends StatefulWidget {
 class _EventDetailsPageState extends State<EventDetailsPage> {
   String? token;
   String? email;
+  String? eventCode;
   final _formKey = GlobalKey<FormState>();
   final _eventCodeController = TextEditingController();
   final _rsvpStatusController = TextEditingController();
@@ -31,12 +37,19 @@ class _EventDetailsPageState extends State<EventDetailsPage> {
     super.initState();
     getTokenFromSharedPrefs();
     print('EventDetailsPage init');
+    decodeToken();
+  }
+
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    fetchEventDetails(
+        widget.eventCode); // Access the event code from widget object
   }
 
   void getTokenFromSharedPrefs() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     String? storedToken = prefs.getString('token');
-
     if (storedToken != null) {
       setState(() {
         token = storedToken;
@@ -48,11 +61,41 @@ class _EventDetailsPageState extends State<EventDetailsPage> {
 
   void decodeToken() {
     Map<String, dynamic>? jwtDecodedToken;
-    if (token != null) {
-      jwtDecodedToken = JwtDecoder.decode(token!);
-      if (jwtDecodedToken.containsKey('email')) {
+    if (widget.token != null) {
+      jwtDecodedToken = JwtDecoder.decode(widget.token!);
+      if (jwtDecodedToken!.containsKey('email')) {
         email = jwtDecodedToken['email'] as String?;
       }
+    }
+  }
+
+  void fetchEventDetails(String eventCode) async {
+    print(("this is valid token $token"));
+    try {
+      var response = await http.get(
+        Uri.parse('$getEventByEventCode$eventCode'),
+        headers: {
+          "Content-Type": "application/json",
+          "Authorization": "Bearer $token"
+        },
+      );
+      print("whats up : $eventCode");
+      print(token);
+      print(response.statusCode);
+
+      if (response.statusCode == 200) {
+        var jsonResponse = jsonDecode(response.body);
+        print("is event true");
+        print(response.body);
+        print("end of event");
+        // Parse the response and store the event details
+        // Update your widget state accordingly
+      } else {
+        print("event fail");
+        print('Failed to fetch event details');
+      }
+    } catch (error) {
+      print('Error: $error');
     }
   }
 
@@ -178,12 +221,16 @@ class _EventDetailsPageState extends State<EventDetailsPage> {
   void dispose() {
     print('EventDetailsPage dispose');
     super.dispose();
-    _eventCodeController.dispose();
-    _rsvpStatusController.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
+    eventCode = ModalRoute.of(context)?.settings.arguments as String?;
+
+    if (eventCode != null) {
+      fetchEventDetails(eventCode!);
+    }
+
     return Scaffold(
       extendBodyBehindAppBar: true,
       appBar: AppBar(
@@ -194,7 +241,7 @@ class _EventDetailsPageState extends State<EventDetailsPage> {
           IconButton(
             icon: const Icon(Icons.close),
             onPressed: () {
-              Navigator.pushNamed(context, '/home');
+              Navigator.pushNamed(context, '/navigator');
             },
           ),
         ],
@@ -284,7 +331,7 @@ class _EventDetailsPageState extends State<EventDetailsPage> {
           ],
         ),
       ),
-      bottomNavigationBar: BottomNavPlaceholder(token: token),
+      // bottomNavigationBar: BottomNavPlaceholder(token: token!),
     );
   }
 }
