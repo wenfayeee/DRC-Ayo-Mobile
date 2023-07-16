@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_animated_button/flutter_animated_button.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:jwt_decoder/jwt_decoder.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class EditProfilePage extends StatefulWidget {
   final String token;
@@ -19,6 +21,31 @@ class _EditProfilePageState extends State<EditProfilePage> {
   void initState() {
     print('hi' + '$widget');
     super.initState();
+    getTokenFromSharedPrefs();
+  }
+
+  void getTokenFromSharedPrefs() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    String? storedToken = prefs.getString('token');
+
+    if (storedToken != null) {
+      setState(() {
+        token = storedToken;
+        print(token);
+      });
+      decodeToken();
+    }
+  }
+
+  void decodeToken() {
+    Map<String, dynamic>? jwtDecodedToken;
+    if (token != null) {
+      jwtDecodedToken = JwtDecoder.decode(token!);
+      if (jwtDecodedToken.containsKey('email')) {
+        email = jwtDecodedToken['email'] as String?;
+        print(email);
+      }
+    }
   }
 
   @override

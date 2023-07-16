@@ -6,8 +6,10 @@ import 'package:http/http.dart' as http;
 import 'package:shared_preferences/shared_preferences.dart';
 
 class ResetPasswordPage extends StatefulWidget {
+  const ResetPasswordPage({Key? key}) : super(key: key);
+
   @override
-  _ResetPasswordPageState createState() => _ResetPasswordPageState();
+  State<ResetPasswordPage> createState() => _ResetPasswordPageState();
 }
 
 class _ResetPasswordPageState extends State<ResetPasswordPage> {
@@ -34,46 +36,45 @@ class _ResetPasswordPageState extends State<ResetPasswordPage> {
   }
 
   void resetPassword() async {
-  final oldPassword = _oldPasswordController.text;
-  final newPassword = _newPasswordController.text;
+    final oldPassword = _oldPasswordController.text;
+    final newPassword = _newPasswordController.text;
 
-  SharedPreferences prefs = await SharedPreferences.getInstance();
-  String? storedToken = prefs.getString('token');
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    String? storedToken = prefs.getString('token');
 
-  if (storedToken != null) {
-    final response = await http.put(
-      Uri.parse(update), // Backend endpoint URL from config.dart
-      headers: {
-        'Authorization': 'Bearer $storedToken',
-      },
-      body: {
-        'currentPassword': oldPassword,
-        'newPassword': newPassword,
-      },
-    );
-
-    if (response.statusCode == 200) {
-      // Password update successful
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content: Text('Password updated successfully'),
-          duration: const Duration(seconds: 3),
-          backgroundColor: Colors.green,
-        ),
+    if (storedToken != null) {
+      final response = await http.put(
+        Uri.parse(update), // Backend endpoint URL from config.dart
+        headers: {
+          'Authorization': 'Bearer $storedToken',
+        },
+        body: {
+          'currentPassword': oldPassword,
+          'newPassword': newPassword,
+        },
       );
-    } else {
-      // Password update failed
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content: Text('Failed to update password'),
-          duration: const Duration(seconds: 3),
-          backgroundColor: Colors.red,
-        ),
-      );
+
+      if (response.statusCode == 200) {
+        // Password update successful
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text('Password updated successfully'),
+            duration: const Duration(seconds: 3),
+            backgroundColor: Colors.green,
+          ),
+        );
+      } else {
+        // Password update failed
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text('Failed to update password'),
+            duration: const Duration(seconds: 3),
+            backgroundColor: Colors.red,
+          ),
+        );
+      }
     }
   }
-}
-
 
   @override
   Widget build(BuildContext context) {

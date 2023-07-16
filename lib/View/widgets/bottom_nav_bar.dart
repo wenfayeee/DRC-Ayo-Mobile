@@ -18,24 +18,6 @@ class BottomNavBar extends StatefulWidget {
 }
 
 class _BottomNavBarState extends State<BottomNavBar> {
-  // late int _currentIndex;
-
-  // @override
-  // void initState() {
-  //   super.initState();
-  //   _currentIndex = widget.currentIndex;
-  // }
-
-  // @override
-  // void didUpdateWidget(covariant BottomNavBar oldWidget) {
-  //   super.didUpdateWidget(oldWidget);
-  //   if (widget.currentIndex != _currentIndex) {
-  //     setState(() {
-  //       _currentIndex = widget.currentIndex;
-  //     });
-  //   }
-  // }
-
   @override
   Widget build(BuildContext context) {
     return ConvexAppBar(

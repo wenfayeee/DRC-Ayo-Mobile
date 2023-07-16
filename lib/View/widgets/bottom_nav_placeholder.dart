@@ -7,7 +7,7 @@ import 'package:jwt_decoder/jwt_decoder.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class BottomNavPlaceholder extends StatefulWidget {
-  final String? token;
+  final String token;
   const BottomNavPlaceholder({
     required this.token,
     Key? key,
@@ -74,8 +74,8 @@ class _BottomNavPlaceholderState extends State<BottomNavPlaceholder>
       body: TabBarView(
         controller: _tabController,
         children: <Widget>[
-          HomePage(token: widget.token!),
-          CreateEventPage(token: widget.token!),
+          HomePage(token: widget.token),
+          CreateEventPage(token: widget.token),
           ProfilePage(),
         ],
       ),
