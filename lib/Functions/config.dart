@@ -21,3 +21,5 @@ final getEventByEventCode = url + 'create_event/event/';
 // RSVP related configs
 final addRSVP = url + 'rsvp/add';
 final getRSVPByStatus = url + 'rsvp/status/:status';
+final getYesStatus = url + 'rsvp/yes/:event_code';
+final getNoStatus = url + 'rsvp/no/:event_code';
