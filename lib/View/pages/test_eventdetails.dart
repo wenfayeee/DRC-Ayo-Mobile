@@ -494,6 +494,35 @@ class _TestPageState extends State<TestPage> {
                     ),
                   ),
                 ),
+                const SizedBox(width: 20),
+                Expanded(child: PushableButton(
+                  onPressed: () {
+                    print(eventCode);
+                    print("Is it goint to rsvp page for $eventCode");
+
+                    Navigator.pushNamed(
+                      context,
+                      '/rsvpDetails',
+                      arguments: eventCode,
+                    );
+                    print("pressed to view rsvp");
+                  },
+                  hslColor: HSLColor.fromColor(const Color(0xFFB3AE99)),
+                  shadow: const BoxShadow(
+                    color: Color(0xFF554C3C),
+                  ),
+                  height: 50,
+                  elevation: 8,
+                  child: Text(
+                    'Guest RSVP',
+                    style: TextStyle(
+                      color: Color(0xFFF8F7F2),
+                      fontSize: 24,
+                      fontFamily: 'Poppins',
+                      fontWeight: FontWeight.w700,
+                    ),
+                  ),
+                ),)
               ],
             ),
           ],
