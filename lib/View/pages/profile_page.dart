@@ -40,7 +40,7 @@ class _ProfilePageState extends State<ProfilePage> {
   }
 
   void _navigateToEditProfile() {
-    Navigator.pushNamed(context, '/eventDetails');
+    Navigator.pushNamed(context, '/editProfile');
   }
 
   void _navigateToResetPassword() {
@@ -63,21 +63,29 @@ class _ProfilePageState extends State<ProfilePage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      extendBodyBehindAppBar: true,
+      backgroundColor: const Color(0xFFFFFCF9),
       body: SingleChildScrollView(
         child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
+          // crossAxisAlignment: CrossAxisAlignment.start,
+          mainAxisAlignment: MainAxisAlignment.center,
           children: [
             const SizedBox(height: 50),
-            Padding(
-              padding: const EdgeInsets.all(22.0),
-              child: Text(
-                "User Account",
-                style: GoogleFonts.poppins(
-                  fontSize: 28.0,
-                  fontWeight: FontWeight.w800,
-                  color: const Color(0xFF6B5F4A),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                Padding(
+                  padding: const EdgeInsets.only(top: 22.0, left: 25.0),
+                  child: Text(
+                    "User Account",
+                    style: GoogleFonts.poppins(
+                      fontSize: 28.0,
+                      fontWeight: FontWeight.w800,
+                      color: const Color(0xFF6B5F4A),
+                    ),
+                  ),
                 ),
-              ),
+              ],
             ),
             const SizedBox(height: 20),
             Center(

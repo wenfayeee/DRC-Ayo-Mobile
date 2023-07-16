@@ -1,9 +1,10 @@
 import 'dart:convert';
 
-// import 'package:add_2_calendar/add_2_calendar.dart';
+import 'package:add_2_calendar/add_2_calendar.dart';
+import 'package:device_calendar/device_calendar.dart';
 import 'package:event_management_app/Functions/config.dart';
-import 'package:event_management_app/View/pages/home_page.dart';
-import 'package:event_management_app/View/widgets/bottom_nav_placeholder.dart';
+import 'package:event_management_app/Model/event_model.dart';
+// import 'package:event_management_app/View/widgets/bottom_nav_placeholder.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:http/http.dart' as http;
@@ -32,8 +33,12 @@ class _EventDetailsPageState extends State<EventDetailsPage> {
   final _eventCodeController = TextEditingController();
   final _rsvpStatusController = TextEditingController();
 
+  List<InvitedEventDetails> invitedEventDetails = [];
+  List<HostedEventDetails> hostedEventDetails = [];
+
   @override
   void initState() {
+    print('hi' + '$widget');
     super.initState();
     getTokenFromSharedPrefs();
     print('EventDetailsPage init');
@@ -104,11 +109,130 @@ class _EventDetailsPageState extends State<EventDetailsPage> {
   //     return JwtDecoder.decode(token!);
   //   }
   //   return null;
+  void showInvitedEventDetails() async {
+    Future<List<InvitedEventDetails>> getInvitedEventDetails() async {
+      try {
+        var response = await http.get(
+          Uri.parse('$getEventByInviteeEmail$email'),
+          headers: {
+            "Content-Type": "application/json",
+            "Authorization": "Bearer $token"
+          },
+        );
+
+        print('Response status code: ${response.statusCode}');
+        print('Response body: ${response.body}');
+        if (response.statusCode == 200) {
+          var jsonResponse = jsonDecode(response.body) as List<dynamic>;
+          List<InvitedEventDetails> invitedEventDetails =
+              jsonResponse.map((eventData) {
+            return InvitedEventDetails(
+                eventId: eventData['event_id'],
+                eventName: eventData['event_name'],
+                eventDate: eventData['event_date'],
+                eventTime: eventData['event_time'],
+                eventAddress: eventData['event_address'],
+                eventDetail: eventData['event_detail'],
+                eventRsvpBeforeDate: eventData['event_rsvp_before_date'],
+                eventRsvpBeforeTime: eventData['event_rsvp_before_time'],
+                eventCode: eventData['event_code']);
+          }).toList();
+          return invitedEventDetails;
+        } else if (response.statusCode == 404) {
+          print('No event details found');
+          return [];
+        } else {
+          print('Failed to fetch invited event details');
+          return [];
+        }
+      } catch (error) {
+        print('Error: $error');
+        return [];
+      }
+    }
+
+    // Call the function to get invited events' details
+    invitedEventDetails = await getInvitedEventDetails();
+  }
+
+  void showHostedEventDetails() async {
+    Future<List<HostedEventDetails>> getHostedEventDetails() async {
+      try {
+        var response = await http.get(
+          Uri.parse('$getEventByEmail$email'),
+          headers: {
+            "Content-Type": "application/json",
+            "Authorization": "Bearer $token"
+          },
+        );
+        print('Response status code: ${response.statusCode}');
+        print('Reponse body: ${response.body}');
+        if (response.statusCode == 200) {
+          var jsonResponse = jsonDecode(response.body) as List<dynamic>;
+          List<HostedEventDetails> hostedEventDetails =
+              jsonResponse.map((eventData) {
+            return HostedEventDetails(
+                eventId: eventData['event_id'],
+                eventName: eventData['event_name'],
+                eventDate: eventData['event_date'],
+                eventTime: eventData['event_time'],
+                eventAddress: eventData['event_address'],
+                eventDetail: eventData['event_detail'],
+                eventRsvpBeforeDate: eventData['event_rsvp_before_date'],
+                eventRsvpBeforeTime: eventData['event_rsvp_before_time'],
+                eventCode: eventData['event_code']);
+          }).toList();
+          return hostedEventDetails;
+        } else if (response.statusCode == 404) {
+          print('No events found');
+          return [];
+        } else {
+          print('Failed to fetch hosted events');
+          return [];
+        }
+      } catch (error) {
+        print('Error: $error');
+        return [];
+      }
+    }
+
+    // Call the function to get hosted events' details
+    hostedEventDetails = await getHostedEventDetails();
+  }
+
+  // void testAdd() {
+  //   final Event event = Event(
+  //     title: 'Study group',
+  //     description: 'Kononnya study la',
+  //     startDate: DateTime(2023, 7, 9, 18, 30),
+  //     endDate: DateTime(2023, 7, 9, 22, 30),
+  //     androidParams: const AndroidParams(
+  //       emailInvites: [
+  //         'farhah@besquare.com.my',
+  //         'asyura@besquare.com.my',
+  //         'lubega@besquare.com.my',
+  //         'haziq@besquare.com.my',
+  //         'munnfaye@besquare.com.my'
+  //       ],
+  //     ),
+  //   );
+  //   Add2Calendar.addEvent2Cal(event);
   // }
 
-  void addToCalendar() async {
-    // To be implemented
-  }
+  // void addToCalendar() async {
+  //   // Request permission first if they haven't been granted
+  //   try {
+  //     var permissionGranted = await _deviceCalendarPlugin.hasPermissions();
+  //     if (permissionGranted.isSuccess && !permissionGranted.data) {
+  //       permissionGranted = await _deviceCalendarPlugin.requestPermissions();
+  //       if (!permissionGranted.isSuccess || !permissionGranted.data) {
+  //         return;
+  //       }
+  //     }
+  //   } catch (error) {
+  //     print('Error: $error');
+  //   }
+  // }
 
   void showRSVPPrompt() async {
     if (_formKey.currentState?.validate() ?? false) {
@@ -198,25 +322,6 @@ class _EventDetailsPageState extends State<EventDetailsPage> {
     }
   }
 
-  // void testAdd() {
-  //   final Event event = Event(
-  //     title: 'Study group',
-  //     description: 'Kononnya study la',
-  //     startDate: DateTime(2023, 7, 9, 18, 30),
-  //     endDate: DateTime(2023, 7, 9, 22, 30),
-  //     androidParams: const AndroidParams(
-  //       emailInvites: [
-  //         'farhah@besquare.com.my',
-  //         'asyura@besquare.com.my',
-  //         'lubega@besquare.com.my',
-  //         'haziq@besquare.com.my',
-  //         'munnfaye@besquare.com.my'
-  //       ],
-  //     ),
-  //   );
-  //   Add2Calendar.addEvent2Cal(event);
-  // }
-
   @override
   void dispose() {
     print('EventDetailsPage dispose');
@@ -283,7 +388,7 @@ class _EventDetailsPageState extends State<EventDetailsPage> {
                       child: PushableButton(
                         onPressed: () {
                           // Handle 'RSVP' button logic
-                          showRSVPPrompt();
+                          showInvitedEventDetails();
                         },
                         hslColor: HSLColor.fromColor(const Color(0xFFB2BBDA)),
                         shadow: const BoxShadow(
@@ -306,7 +411,8 @@ class _EventDetailsPageState extends State<EventDetailsPage> {
                       child: PushableButton(
                         onPressed: () {
                           // Handle 'Cancel' button logic
-                          Navigator.pop(context);
+                          // Navigator.pop(context);
+                          showHostedEventDetails();
                         },
                         hslColor: HSLColor.fromColor(const Color(0xFFB3AE99)),
                         shadow: const BoxShadow(

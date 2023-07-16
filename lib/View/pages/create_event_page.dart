@@ -177,7 +177,8 @@ class _CreateEventPageState extends State<CreateEventPage> {
           _eventCodeController.text.isNotEmpty &&
           _inviteeEmailController.text.isNotEmpty) {
         var inviteeEmail = _inviteeEmailController.text;
-        var inviteeEmailList = inviteeEmail.split(',').map((e) => e.trim()).toList();
+        var inviteeEmailList =
+            inviteeEmail.split(',').map((e) => e.trim()).toList();
         var regBody = {
           "event_name": _titleController.text,
           "event_date": _dateController.text,
@@ -228,7 +229,7 @@ class _CreateEventPageState extends State<CreateEventPage> {
               ),
             );
             await Future.delayed(const Duration(seconds: 3));
-            Navigator.pushNamed(context, '/home');
+            Navigator.pushNamed(context, '/navigator');
           } else if (response.statusCode == 500) {
             print('Event addition failed');
           } else {
@@ -318,7 +319,7 @@ class _CreateEventPageState extends State<CreateEventPage> {
                         border: OutlineInputBorder(
                           borderSide: BorderSide(color: Color(0xFFC3C3C3)),
                           borderRadius: BorderRadius.all(
-                            Radius.circular(15.0),
+                            Radius.circular(10.0),
                           ),
                         ),
                         hintStyle: TextStyle(
@@ -331,126 +332,140 @@ class _CreateEventPageState extends State<CreateEventPage> {
                       ),
                     ),
                   ),
-                  const SizedBox(height: 5.0),
-                  Padding(
-                    padding: const EdgeInsets.only(
-                        top: 10.0, left: 30.0, right: 30.0),
-                    child: TextFormField(
-                      readOnly: true,
-                      onTap: () async {
-                        final currentDate = DateTime.now();
-                        await showCupertinoModalPopup(
-                          context: context,
-                          builder: (BuildContext context) {
-                            return Container(
-                              width: double.infinity,
-                              height: 300.0,
-                              child: CupertinoDatePicker(
-                                backgroundColor: const Color(0xFFFFFFFF),
-                                mode: CupertinoDatePickerMode.date,
-                                initialDateTime: currentDate,
-                                minimumDate: currentDate,
-                                maximumDate: DateTime(2100),
-                                onDateTimeChanged: (DateTime selectedDate) {
-                                  _dateController.text =
-                                      DateFormat('yyyy-MM-dd')
-                                          .format(selectedDate);
+                  const SizedBox(height: 16.0),
+                  Row(
+                    children: [
+                      Expanded(
+                        child: Padding(
+                          padding:
+                              const EdgeInsets.only(left: 30.0, right: 5.0),
+                          child: TextFormField(
+                            readOnly: true,
+                            onTap: () async {
+                              final currentDate = DateTime.now();
+                              await showCupertinoModalPopup(
+                                context: context,
+                                builder: (BuildContext context) {
+                                  return Container(
+                                    width: double.infinity,
+                                    height: 300.0,
+                                    child: CupertinoDatePicker(
+                                      backgroundColor: const Color(0xFFFFFFFF),
+                                      mode: CupertinoDatePickerMode.date,
+                                      initialDateTime: currentDate,
+                                      minimumDate: currentDate,
+                                      maximumDate: DateTime(2100),
+                                      onDateTimeChanged:
+                                          (DateTime selectedDate) {
+                                        _dateController.text =
+                                            DateFormat('yyyy-MM-dd')
+                                                .format(selectedDate);
+                                      },
+                                    ),
+                                  );
                                 },
+                              );
+                            },
+                            validator: (value) {
+                              if (value == null || value.isEmpty) {
+                                return 'Please enter a date.';
+                              }
+                              return null;
+                            },
+                            controller: _dateController,
+                            keyboardType: TextInputType.datetime,
+                            style: GoogleFonts.poppins(
+                              fontSize: 18.0,
+                              fontWeight: FontWeight.w500,
+                              color: const Color(0xFF000000),
+                            ),
+                            decoration: const InputDecoration(
+                              filled: true,
+                              fillColor: Color(0xFFFFFFFF),
+                              hintText: 'Event Date',
+                              contentPadding: EdgeInsets.all(12.0),
+                              border: OutlineInputBorder(
+                                borderSide:
+                                    BorderSide(color: Color(0xFFC3C3C3)),
+                                borderRadius:
+                                    BorderRadius.all(Radius.circular(10.0)),
                               ),
-                            );
-                          },
-                        );
-                      },
-                      validator: (value) {
-                        if (value == null || value.isEmpty) {
-                          return 'Please enter a date.';
-                        }
-                        return null;
-                      },
-                      controller: _dateController,
-                      keyboardType: TextInputType.datetime,
-                      style: GoogleFonts.poppins(
-                        fontSize: 18.0,
-                        fontWeight: FontWeight.w500,
-                        color: const Color(0xFF000000),
-                      ),
-                      decoration: const InputDecoration(
-                        filled: true,
-                        fillColor: Color(0xFFFFFFFF),
-                        hintText: 'Event Date',
-                        contentPadding: EdgeInsets.all(12.0),
-                        border: OutlineInputBorder(
-                          borderSide: BorderSide(color: Color(0xFFC3C3C3)),
-                          borderRadius: BorderRadius.all(Radius.circular(15.0)),
+                              hintStyle: TextStyle(
+                                fontFamily: 'Poppins',
+                                fontSize: 18.0,
+                                fontWeight: FontWeight.w500,
+                                color: Color(0xFFC3C3C3),
+                              ),
+                              alignLabelWithHint: true,
+                            ),
+                          ),
                         ),
-                        hintStyle: TextStyle(
-                          fontFamily: 'Poppins',
-                          fontSize: 18.0,
-                          fontWeight: FontWeight.w500,
-                          color: Color(0xFFC3C3C3),
-                        ),
-                        alignLabelWithHint: true,
                       ),
-                    ),
-                  ),
-                  const SizedBox(height: 5.0),
-                  Padding(
-                    padding: const EdgeInsets.only(
-                        top: 10.0, left: 30.0, right: 30.0),
-                    child: TextFormField(
-                      readOnly: true,
-                      onTap: () async {
-                        final selectedTime = await showCupertinoModalPopup(
-                          context: context,
-                          builder: (BuildContext context) {
-                            return Container(
-                              color: const Color(0xFFFFFFFF),
-                              height: 300.0,
-                              child: CupertinoDatePicker(
-                                mode: CupertinoDatePickerMode.time,
-                                initialDateTime: DateTime.now(),
-                                onDateTimeChanged: (DateTime newTime) {
-                                  setState(() {
-                                    final formattedTime =
-                                        DateFormat('HH:mm:ss').format(newTime);
-                                    _timeController.text =
-                                        formattedTime.toString();
-                                  });
+                      Expanded(
+                        child: Padding(
+                          padding:
+                              const EdgeInsets.only(left: 5.0, right: 30.0),
+                          child: TextFormField(
+                            readOnly: true,
+                            onTap: () async {
+                              final selectedTime =
+                                  await showCupertinoModalPopup(
+                                context: context,
+                                builder: (BuildContext context) {
+                                  return Container(
+                                    color: const Color(0xFFFFFFFF),
+                                    height: 300.0,
+                                    child: CupertinoDatePicker(
+                                      mode: CupertinoDatePickerMode.time,
+                                      initialDateTime: DateTime.now(),
+                                      onDateTimeChanged: (DateTime newTime) {
+                                        setState(() {
+                                          final formattedTime =
+                                              DateFormat('HH:mm:ss')
+                                                  .format(newTime);
+                                          _timeController.text =
+                                              formattedTime.toString();
+                                        });
+                                      },
+                                    ),
+                                  );
                                 },
+                              );
+                              if (selectedTime != null) {
+                                final formattedTime =
+                                    DateFormat('HH:mm:ss').format(selectedTime);
+                                print('Selected time: $formattedTime');
+                              }
+                            },
+                            controller: _timeController,
+                            keyboardType: TextInputType.datetime,
+                            style: GoogleFonts.poppins(
+                                fontSize: 18.0,
+                                fontWeight: FontWeight.w500,
+                                color: const Color(0xFF000000)),
+                            decoration: const InputDecoration(
+                              filled: true,
+                              fillColor: Color(0xFFFFFFFF),
+                              hintText: 'Time',
+                              contentPadding: EdgeInsets.all(12.0),
+                              border: OutlineInputBorder(
+                                borderSide:
+                                    BorderSide(color: Color(0xFFC3C3C3)),
+                                borderRadius:
+                                    BorderRadius.all(Radius.circular(10.0)),
                               ),
-                            );
-                          },
-                        );
-                        if (selectedTime != null) {
-                          final formattedTime =
-                              DateFormat('HH:mm:ss').format(selectedTime);
-                          print('Selected time: $formattedTime');
-                        }
-                      },
-                      controller: _timeController,
-                      keyboardType: TextInputType.datetime,
-                      style: GoogleFonts.poppins(
-                          fontSize: 18.0,
-                          fontWeight: FontWeight.w500,
-                          color: const Color(0xFF000000)),
-                      decoration: const InputDecoration(
-                        filled: true,
-                        fillColor: Color(0xFFFFFFFF),
-                        hintText: 'Time',
-                        contentPadding: EdgeInsets.all(12.0),
-                        border: OutlineInputBorder(
-                          borderSide: BorderSide(color: Color(0xFFC3C3C3)),
-                          borderRadius: BorderRadius.all(Radius.circular(15.0)),
+                              hintStyle: TextStyle(
+                                fontFamily: 'Poppins',
+                                fontSize: 18.0,
+                                fontWeight: FontWeight.w500,
+                                color: Color(0xFFC3C3C3),
+                              ),
+                              alignLabelWithHint: true,
+                            ),
+                          ),
                         ),
-                        hintStyle: TextStyle(
-                          fontFamily: 'Poppins',
-                          fontSize: 18.0,
-                          fontWeight: FontWeight.w500,
-                          color: Color(0xFFC3C3C3),
-                        ),
-                        alignLabelWithHint: true,
                       ),
-                    ),
+                    ],
                   ),
                   const SizedBox(height: 5.0),
                   Padding(
@@ -470,7 +485,7 @@ class _CreateEventPageState extends State<CreateEventPage> {
                         contentPadding: EdgeInsets.all(12.0),
                         border: OutlineInputBorder(
                           borderSide: BorderSide(color: Color(0xFFC3C3C3)),
-                          borderRadius: BorderRadius.all(Radius.circular(15.0)),
+                          borderRadius: BorderRadius.all(Radius.circular(10.0)),
                         ),
                         hintStyle: TextStyle(
                           fontFamily: 'Poppins',
@@ -501,7 +516,7 @@ class _CreateEventPageState extends State<CreateEventPage> {
                         contentPadding: EdgeInsets.all(12.0),
                         border: OutlineInputBorder(
                           borderSide: BorderSide(color: Color(0xFFC3C3C3)),
-                          borderRadius: BorderRadius.all(Radius.circular(15.0)),
+                          borderRadius: BorderRadius.all(Radius.circular(10.0)),
                         ),
                         hintStyle: TextStyle(
                           fontFamily: 'Poppins',
@@ -571,7 +586,7 @@ class _CreateEventPageState extends State<CreateEventPage> {
                                 borderSide:
                                     BorderSide(color: Color(0xFFC3C3C3)),
                                 borderRadius:
-                                    BorderRadius.all(Radius.circular(15.0)),
+                                    BorderRadius.all(Radius.circular(10.0)),
                               ),
                               hintStyle: TextStyle(
                                 fontFamily: 'Poppins',
@@ -646,7 +661,7 @@ class _CreateEventPageState extends State<CreateEventPage> {
                                 borderSide:
                                     BorderSide(color: Color(0xFFC3C3C3)),
                                 borderRadius:
-                                    BorderRadius.all(Radius.circular(15.0)),
+                                    BorderRadius.all(Radius.circular(10.0)),
                               ),
                               hintStyle: TextStyle(
                                 fontFamily: 'Poppins',
@@ -679,7 +694,7 @@ class _CreateEventPageState extends State<CreateEventPage> {
                         contentPadding: EdgeInsets.all(12.0),
                         border: OutlineInputBorder(
                           borderSide: BorderSide(color: Color(0xFFC3C3C3)),
-                          borderRadius: BorderRadius.all(Radius.circular(15.0)),
+                          borderRadius: BorderRadius.all(Radius.circular(10.0)),
                         ),
                         hintStyle: TextStyle(
                           fontFamily: 'Poppins',
@@ -710,7 +725,7 @@ class _CreateEventPageState extends State<CreateEventPage> {
                         contentPadding: EdgeInsets.all(12.0),
                         border: OutlineInputBorder(
                           borderSide: BorderSide(color: Color(0xFFC3C3C3)),
-                          borderRadius: BorderRadius.all(Radius.circular(15.0)),
+                          borderRadius: BorderRadius.all(Radius.circular(10.0)),
                         ),
                         hintStyle: TextStyle(
                           fontFamily: 'Poppins',

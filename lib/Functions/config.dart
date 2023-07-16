@@ -1,6 +1,7 @@
 //Main url
-final url = 'http://192.168.18.35:3000/';
-
+// final url = 'http://10.0.2.2:3000/'; // localhost
+final url = 'http://192.168.18.71:3000/'; //my emulator IP address
+// final url = 'http://192.168.100.28:3000/'; //condo IP
 // User-account related configs
 final register = url + 'users/register';
 final login = url + 'users/login';
