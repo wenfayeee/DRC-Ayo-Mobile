@@ -1,18 +1,12 @@
-import 'package:event_management_app/Functions/config.dart';
+import 'package:event_management_app/View/pages/event_details_page.dart';
 import 'package:event_management_app/View/pages/guest_rsvp_page.dart';
 import 'package:event_management_app/View/pages/profile_page.dart';
-import 'package:event_management_app/View/pages/error_page.dart';
 import 'package:event_management_app/View/pages/create_event_page.dart';
 import 'package:event_management_app/View/pages/forgot_password_page.dart';
 import 'package:event_management_app/View/pages/home_page.dart';
 import 'package:event_management_app/View/pages/signin_page.dart';
 import 'package:event_management_app/View/pages/signup_page.dart';
-import 'package:event_management_app/View/pages/splashscreen.dart';
-import 'package:event_management_app/View/pages/edit_profile_page.dart';
-import 'package:event_management_app/View/pages/event_history_page.dart';
 import 'package:event_management_app/View/pages/reset_password_page.dart';
-import 'package:event_management_app/View/pages/event_details_page.dart';
-import 'package:event_management_app/View/pages/test_eventdetails.dart';
 import 'package:event_management_app/View/widgets/bottom_nav_placeholder.dart';
 import 'package:flutter/material.dart';
 import 'package:jwt_decoder/jwt_decoder.dart';
@@ -32,16 +26,13 @@ bool isTokenValid(String? token) {
     DateTime currentDate = DateTime.now();
     return currentDate.isBefore(expirationDate);
   }
-  print("$expirationTimestamp");
   return false;
 }
 
 void main() async {
-  print("object");
   WidgetsFlutterBinding.ensureInitialized();
   SharedPreferences prefs = await SharedPreferences.getInstance();
   String? token = prefs.getString('token');
-  print("$token");
 
   runApp(MainApp(
     token: isTokenValid(token) ? token : null,
@@ -66,7 +57,7 @@ class _MainAppState extends State<MainApp> {
   @override
   void initState() {
     super.initState();
-    homeRoute = widget.token != null && isTokenValid(widget.token!)
+    homeRoute = widget.token != null && isTokenValid(widget.token)
         ? '/navigator'
         : '/signin';
   }
@@ -79,24 +70,31 @@ class _MainAppState extends State<MainApp> {
       initialRoute: homeRoute,
       routes: {
         // Other page routes
-        '/splash': (context) => const SplashScreenPage(),
         '/signin': (context) => const SignInPage(),
         '/signup': (context) => const SignUpPage(),
-        '/home': (context) => HomePage(token: widget.token!),
-        '/create': (context) => CreateEventPage(token: widget.token!),
+        '/home': (context) => HomePage(token: widget.token ?? ''),
+        '/create': (context) => CreateEventPage(token: widget.token ?? ''),
         '/profile': (context) => const ProfilePage(),
         '/forgotPwd': (context) => const ForgotPwdPage(),
-        '/eventHist': (context) => EventHistoryPage(),
-        '/editProfile': (context) => EditProfilePage(token: widget.token!),
-        '/resetPassword': (context) => ResetPasswordPage(),
-        // '/eventDetails': (context) => EventDetailsPage(token: widget.token!, eventCode: '',),
-        '/rsvpDetails': (context) => GuestRSVPPage(token: widget.token!, eventCode: '',),
-        '/navigator': (context) => BottomNavPlaceholder(token: widget.token!),
-        '/error': (context) => const ErrorPage(),
-        '/test': (context) => TestPage(
-              token: widget.token!,
+        '/resetPassword': (context) => const ResetPasswordPage(),
+        '/eventDetailsInvited': (context) => EventDetailsPage(
+              token: widget.token ?? '',
+              eventCode: '',
+              isHost: false,
+              isInvited: true,
+            ),
+        '/eventDetailsHosted': (context) => EventDetailsPage(
+              token: widget.token ?? '',
+              eventCode: '',
+              isHost: true,
+              isInvited: false,
+            ),
+        '/rsvpDetails': (context) => GuestRSVPPage(
+              token: widget.token,
               eventCode: '',
             ),
+        '/navigator': (context) =>
+            BottomNavPlaceholder(token: widget.token ?? ''),
       },
     );
   }

@@ -1,8 +1,13 @@
+// ignore_for_file: use_build_context_synchronously
+
 import 'dart:convert';
 import 'package:event_management_app/Functions/config.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:http/http.dart' as http;
+import 'package:iconsax/iconsax.dart';
+import 'package:lottie/lottie.dart';
+import 'package:material_dialogs/dialogs.dart';
 import 'package:pushable_button/pushable_button.dart';
 
 class SignUpPage extends StatefulWidget {
@@ -60,16 +65,140 @@ class _SignUpPageState extends State<SignUpPage> {
         // var statusCode = jsonResponse['statusCode'] as int?;
 
         if (response.statusCode == 201) {
-          Navigator.pushNamed(context, '/signin');
+          return Dialogs.materialDialog(
+            context: context,
+            title: 'Success!',
+            lottieBuilder: Lottie.asset('assets/animations/success.json',
+                fit: BoxFit.contain),
+            titleAlign: TextAlign.center,
+            msg:
+                "Congratulations! You have successfully created an account. Please sign in to proceed.",
+            msgAlign: TextAlign.center,
+            msgStyle: GoogleFonts.poppins(
+              fontSize: 16.0,
+              fontStyle: FontStyle.italic,
+              fontWeight: FontWeight.w500,
+              color: const Color(0xFF000000),
+            ),
+            color: const Color(0xFFF8F7F2),
+            titleStyle: GoogleFonts.poppins(
+              fontSize: 20.0,
+              fontWeight: FontWeight.w600,
+              color: const Color(0xFF000000),
+            ),
+            actions: [
+              PushableButton(
+                onPressed: () {
+                  Navigator.pushReplacementNamed(context, '/signin');
+                },
+                hslColor: HSLColor.fromColor(const Color(0xFF888789)),
+                shadow: const BoxShadow(
+                  color: Color(0xFF505457),
+                ),
+                height: 50,
+                elevation: 8,
+                child: Text(
+                  'Ok',
+                  style: GoogleFonts.poppins(
+                    fontSize: 16,
+                    fontWeight: FontWeight.w700,
+                    color: const Color(0xFFF8F7F2),
+                  ),
+                ),
+              ),
+            ],
+          );
         } else if (response.statusCode == 409) {
-          print('Email already exist.');
+          return Dialogs.materialDialog(
+            context: context,
+            title: 'Email already exist.',
+            lottieBuilder: Lottie.asset('assets/animations/error.json',
+                fit: BoxFit.contain),
+            titleAlign: TextAlign.center,
+            msg: 'Please register with another email.',
+            msgAlign: TextAlign.center,
+            msgStyle: GoogleFonts.poppins(
+              fontSize: 16.0,
+              fontStyle: FontStyle.italic,
+              fontWeight: FontWeight.w500,
+              color: const Color(0xFF000000),
+            ),
+            color: const Color(0xFFF8F7F2),
+            titleStyle: GoogleFonts.poppins(
+              fontSize: 20.0,
+              fontWeight: FontWeight.w600,
+              color: const Color(0xFF000000),
+            ),
+            actions: [
+              PushableButton(
+                onPressed: () {
+                  Navigator.pop(context);
+                },
+                hslColor: HSLColor.fromColor(const Color(0xFF888789)),
+                shadow: const BoxShadow(
+                  color: Color(0xFF505457),
+                ),
+                height: 50,
+                elevation: 8,
+                child: Text(
+                  'Try Again',
+                  style: GoogleFonts.poppins(
+                    fontSize: 16,
+                    fontWeight: FontWeight.w700,
+                    color: const Color(0xFFF8F7F2),
+                  ),
+                ),
+              ),
+            ],
+          );
         } else {
           setState(() {
             _isNotValidate = true;
           });
         }
       } catch (error) {
-        print('Error: $error');
+        return Dialogs.materialDialog(
+          context: context,
+          title: 'An error occured.',
+          lottieBuilder:
+              Lottie.asset('assets/animations/error.json', fit: BoxFit.contain),
+          titleAlign: TextAlign.center,
+          msg: 'Please try again later.',
+          msgAlign: TextAlign.center,
+          msgStyle: GoogleFonts.poppins(
+            fontSize: 16.0,
+            fontStyle: FontStyle.italic,
+            fontWeight: FontWeight.w500,
+            color: const Color(0xFF000000),
+          ),
+          color: const Color(0xFFF8F7F2),
+          titleStyle: GoogleFonts.poppins(
+            fontSize: 20.0,
+            fontWeight: FontWeight.w600,
+            color: const Color(0xFF000000),
+          ),
+          actions: [
+            PushableButton(
+              onPressed: () {
+                Navigator.pop(context);
+              },
+              hslColor: HSLColor.fromColor(const Color(0xFF888789)),
+              shadow: const BoxShadow(
+                color: Color(0xFF505457),
+              ),
+              height: 50,
+              elevation: 8,
+              child: Text(
+                'Try Again',
+                style: GoogleFonts.poppins(
+                  fontSize: 16,
+                  fontWeight: FontWeight.w700,
+                  color: const Color(0xFFF8F7F2),
+                ),
+              ),
+            ),
+          ],
+        );
       } finally {
         setState(() {
           _isLoading = false;
@@ -77,81 +206,6 @@ class _SignUpPageState extends State<SignUpPage> {
       }
     }
   }
-  // void _signUpButtonPressed() {
-  //   final name = _newUserNameController.text.trim();
-  //   final email = _newUserEmailController.text.trim();
-  //   final password = _newUserPasswordController.text.trim();
-  //   final confirmPassword = _confirmPasswordController.text.trim();
-
-  //   if (name.isEmpty ||
-  //       email.isEmpty ||
-  //       password.isEmpty ||
-  //       confirmPassword.isEmpty) {
-  //     showDialog(
-  //       context: context,
-  //       builder: (context) {
-  //         return AlertDialog(
-  //           title: const Text(
-  //             'Error',
-  //             style: TextStyle(color: Colors.red, fontWeight: FontWeight.bold),
-  //           ),
-  //           content: const Text('Please fill in all the required fields.'),
-  //           actions: [
-  //             TextButton(
-  //               onPressed: () {
-  //                 Navigator.pop(context);
-  //               },
-  //               child: const Text('OK'),
-  //             ),
-  //           ],
-  //           shape: RoundedRectangleBorder(
-  //             borderRadius: BorderRadius.circular(16.0),
-  //           ),
-  //           elevation: 8.0,
-  //         );
-  //       },
-  //     );
-  //   } else if (!_nameValid.value &&
-  // !_emailValid.value &&
-  // !_passwordValid.value &&
-  // !_confirmPassword.value) {
-  //     showDialog(
-  //       context: context,
-  //       builder: (context) {
-  //         return AlertDialog(
-  //           title: const Text(
-  //             'Error',
-  //             style: TextStyle(color: Colors.red, fontWeight: FontWeight.bold),
-  //           ),
-  //           content: const Text('Please enter valid values for all fields.'),
-  //           actions: [
-  //             TextButton(
-  //               onPressed: () {
-  //                 Navigator.pop(context);
-  //               },
-  //               child: const Text('OK'),
-  //             ),
-  //           ],
-  //           shape: RoundedRectangleBorder(
-  //             borderRadius: BorderRadius.circular(16.0),
-  //           ),
-  //           elevation: 8.0,
-  //         );
-  //       },
-  //     );
-  //   } else {
-  //     setState(() {
-  //       _isLoading = true;
-  //     });
-
-  //     Future.delayed(const Duration(seconds: 2), () {
-  //       setState(() {
-  //         _isLoading = false;
-  //       });
-  //       Navigator.of(context).pushNamed('/signin');
-  //     });
-  //   }
-  // }
 
   @override
   Widget build(BuildContext context) {
@@ -167,7 +221,7 @@ class _SignUpPageState extends State<SignUpPage> {
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
                   Padding(
-                    padding: const EdgeInsets.only(top: 90.0),
+                    padding: const EdgeInsets.only(top: 50.0),
                     child: Image.asset(
                       'assets/images/Ayo_logo.png',
                       width: 245.22,
@@ -208,7 +262,7 @@ class _SignUpPageState extends State<SignUpPage> {
                             });
                           },
                           validator: (value) {
-                            if (value == null || value.isEmpty) {
+                            if (value == null || value.trim().isEmpty) {
                               return 'Please enter your name';
                             }
                             if (!RegExp(r"^[a-zA-Z ,.\'-]+$").hasMatch(value)) {
@@ -216,6 +270,13 @@ class _SignUpPageState extends State<SignUpPage> {
                             }
                             if (value.length < 3) {
                               return 'Name must be more than 2 characters';
+                            }
+                            if (value.length > 31) {
+                              return 'Name can be at most 30 characters';
+                            }
+                            if (value.contains(RegExp(
+                                r'\b(SELECT|UPDATE|DELETE|INSERT|DROP)\b'))) {
+                              return 'Invalid input';
                             }
                             return null;
                           },
@@ -262,11 +323,18 @@ class _SignUpPageState extends State<SignUpPage> {
                             });
                           },
                           validator: (value) {
-                            if (value == null || value.isEmpty) {
+                            if (value == null || value.trim().isEmpty) {
                               return 'Please enter your email';
                             }
                             if (!value.contains('@')) {
                               return 'Please enter a valid email address';
+                            }
+                            if (!value.contains('.com')) {
+                              return 'Please enter a valid email address';
+                            }
+                            if (value.contains(RegExp(
+                                r'\b(SELECT|UPDATE|DELETE|INSERT|DROP)\b'))) {
+                              return 'Invalid input';
                             }
                             return null;
                           },
@@ -313,7 +381,7 @@ class _SignUpPageState extends State<SignUpPage> {
                             });
                           },
                           validator: (value) {
-                            if (value == null || value.isEmpty) {
+                            if (value == null || value.trim().isEmpty) {
                               return 'Please enter your password';
                             }
                             if (!value.contains(RegExp(r'[A-Z]'))) {
@@ -327,6 +395,13 @@ class _SignUpPageState extends State<SignUpPage> {
                             }
                             if (value.length < 8) {
                               return 'Password must be at least 8 characters long';
+                            }
+                            if (value.length > 17) {
+                              return 'Password can be at most 16 characters long only';
+                            }
+                            if (value.contains(RegExp(
+                                r'\b(SELECT|UPDATE|DELETE|INSERT|DROP)\b'))) {
+                              return 'Invalid input';
                             }
                             return null;
                           },
@@ -348,9 +423,7 @@ class _SignUpPageState extends State<SignUpPage> {
                                 });
                               },
                               child: Icon(
-                                _isObscure
-                                    ? Icons.visibility
-                                    : Icons.visibility_off,
+                                _isObscure ? Iconsax.eye : Iconsax.eye_slash,
                                 color: const Color(0xFFC3C3C3),
                               ),
                             ),
@@ -387,11 +460,19 @@ class _SignUpPageState extends State<SignUpPage> {
                             });
                           },
                           validator: (value) {
-                            if (value == null || value.isEmpty) {
+                            if (value == null || value.trim().isEmpty) {
                               return 'Please re-enter your password';
                             }
                             if (value != _newUserPasswordController.text) {
                               return 'Password must be same as above';
+                            }
+                            if (value.contains(RegExp(
+                                r'\b(SELECT|UPDATE|DELETE|INSERT|DROP)\b'))) {
+                              return 'Invalid input';
+                            }
+                            if (value.contains(
+                                RegExp(r'<(?:\/?[a-z]|[a-z]+\s*\/?)>'))) {
+                              return 'Invalid input';
                             }
                             return null;
                           },
@@ -414,8 +495,8 @@ class _SignUpPageState extends State<SignUpPage> {
                               },
                               child: Icon(
                                 _confirmIsObscure
-                                    ? Icons.visibility
-                                    : Icons.visibility_off,
+                                    ? Iconsax.eye
+                                    : Iconsax.eye_slash,
                                 color: const Color(0xFFC3C3C3),
                               ),
                             ),
@@ -437,7 +518,7 @@ class _SignUpPageState extends State<SignUpPage> {
                       },
                     ),
                   ),
-                  const SizedBox(height: 90.0),
+                  const SizedBox(height: 40.0),
                   Padding(
                     padding: const EdgeInsets.only(
                         top: 10.0, bottom: 10.0, left: 30.0, right: 30.0),
