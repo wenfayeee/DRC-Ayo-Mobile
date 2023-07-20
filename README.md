@@ -8,9 +8,7 @@ Welcome to the Ayo! Event Management mobile application! This Flutter/Dart-based
 
 - **Event Registration**: Allow users to register for events through the app, making the process convenient and paperless.
 
-- **Attendee Management**: Keep track of event attendees, view their details, and send them updates or reminders.
-
-- **Schedule Management**: Manage event schedules, including multiple sessions or activities.
+- **Attendee Management**: Keep track of event attendees and view their details.
 
 ## Getting Started
 
