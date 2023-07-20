@@ -20,7 +20,7 @@ To run the application locally or on a device, follow these steps:
 
 2. **Clone the Repository**: Clone this repository to your local machine using the following command:
 
-```bash
+```HTTPS
 git clone https://github.com/wenfayeee/DRC-Ayo-Mobile.git
 ```
 
