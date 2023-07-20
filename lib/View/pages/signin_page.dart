@@ -1,9 +1,14 @@
+// ignore_for_file: use_build_context_synchronously
+
 import 'dart:convert';
 
 import 'package:flutter/material.dart';
 import 'package:event_management_app/Functions/config.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:http/http.dart' as http;
+import 'package:iconsax/iconsax.dart';
+import 'package:lottie/lottie.dart';
+import 'package:material_dialogs/dialogs.dart';
 import 'package:pushable_button/pushable_button.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -25,6 +30,12 @@ class _SignInPageState extends State<SignInPage> {
   bool _isObscure = true;
   bool _isLoading = false;
   bool _isNotValidate = false;
+
+  @override
+  void initState() {
+    super.initState();
+    setState(() {});
+  }
 
   @override
   void dispose() {
@@ -54,29 +65,192 @@ class _SignInPageState extends State<SignInPage> {
 
           if (response.statusCode == 200) {
             // Successful authentication
-            var token = jsonResponse['token'] as String?;
-            print("$token");
-            // Store token locally
+            var token = jsonResponse['accessToken'] as String?;
+            var name = jsonResponse['user']['name'] as String?;
+            var email = jsonResponse['user']['email'] as String?;
+
             SharedPreferences prefs = await SharedPreferences.getInstance();
             await prefs.setString('token', token!);
+            await prefs.setString('name', name!);
+            await prefs.setString('email', email!);
+
             Navigator.pushNamed(context, '/navigator');
-            // ScaffoldMessenger.of(context).showSnackBar(
-            //   const SnackBar(
-            //     content: Text("You're logged as {widget.email}"),
-            //     backgroundColor: Colors.green,
-            //   ),
-            // );
           } else if (response.statusCode == 401) {
             // Invalid password
-            print('Invalid password');
+            return Dialogs.materialDialog(
+              context: context,
+              title: 'Invalid Password.',
+              lottieBuilder: Lottie.asset('assets/animations/error.json',
+                  fit: BoxFit.contain),
+              titleAlign: TextAlign.center,
+              msg: 'Please use a valid password.',
+              msgAlign: TextAlign.center,
+              msgStyle: GoogleFonts.poppins(
+                fontSize: 16.0,
+                fontStyle: FontStyle.italic,
+                fontWeight: FontWeight.w500,
+                color: const Color(0xFF000000),
+              ),
+              color: const Color(0xFFF8F7F2),
+              titleStyle: GoogleFonts.poppins(
+                fontSize: 20.0,
+                fontWeight: FontWeight.w600,
+                color: const Color(0xFF000000),
+              ),
+              actions: [
+                PushableButton(
+                  onPressed: () {
+                    Navigator.pop(context);
+                  },
+                  hslColor: HSLColor.fromColor(const Color(0xFF888789)),
+                  shadow: const BoxShadow(
+                    color: Color(0xFF505457),
+                  ),
+                  height: 50,
+                  elevation: 8,
+                  child: Text(
+                    'Try Again',
+                    style: GoogleFonts.poppins(
+                      fontSize: 16,
+                      fontWeight: FontWeight.w700,
+                      color: const Color(0xFFF8F7F2),
+                    ),
+                  ),
+                ),
+              ],
+            );
           } else if (response.statusCode == 404) {
             // User not found
-            print('User not found');
+            return Dialogs.materialDialog(
+              context: context,
+              title: 'User not found',
+              lottieBuilder: Lottie.asset('assets/animations/error.json',
+                  fit: BoxFit.contain),
+              titleAlign: TextAlign.center,
+              msg: 'Please login with a registered email.',
+              msgAlign: TextAlign.center,
+              msgStyle: GoogleFonts.poppins(
+                fontSize: 16.0,
+                fontStyle: FontStyle.italic,
+                fontWeight: FontWeight.w500,
+                color: const Color(0xFF000000),
+              ),
+              color: const Color(0xFFF8F7F2),
+              titleStyle: GoogleFonts.poppins(
+                fontSize: 20.0,
+                fontWeight: FontWeight.w600,
+                color: const Color(0xFF000000),
+              ),
+              actions: [
+                PushableButton(
+                  onPressed: () {
+                    Navigator.pop(context);
+                  },
+                  hslColor: HSLColor.fromColor(const Color(0xFF888789)),
+                  shadow: const BoxShadow(
+                    color: Color(0xFF505457),
+                  ),
+                  height: 50,
+                  elevation: 8,
+                  child: Text(
+                    'Try Again',
+                    style: GoogleFonts.poppins(
+                      fontSize: 16,
+                      fontWeight: FontWeight.w700,
+                      color: const Color(0xFFF8F7F2),
+                    ),
+                  ),
+                ),
+              ],
+            );
           } else {
-            print('Something went wrong');
+            return Dialogs.materialDialog(
+              context: context,
+              title: 'Something went wrong',
+              lottieBuilder: Lottie.asset('assets/animations/error.json',
+                  fit: BoxFit.contain),
+              titleAlign: TextAlign.center,
+              msg: 'Please try again later.',
+              msgAlign: TextAlign.center,
+              msgStyle: GoogleFonts.poppins(
+                fontSize: 16.0,
+                fontStyle: FontStyle.italic,
+                fontWeight: FontWeight.w500,
+                color: const Color(0xFF000000),
+              ),
+              color: const Color(0xFFF8F7F2),
+              titleStyle: GoogleFonts.poppins(
+                fontSize: 20.0,
+                fontWeight: FontWeight.w600,
+                color: const Color(0xFF000000),
+              ),
+              actions: [
+                PushableButton(
+                  onPressed: () {
+                    Navigator.pop(context);
+                  },
+                  hslColor: HSLColor.fromColor(const Color(0xFF888789)),
+                  shadow: const BoxShadow(
+                    color: Color(0xFF505457),
+                  ),
+                  height: 50,
+                  elevation: 8,
+                  child: Text(
+                    'Try Again',
+                    style: GoogleFonts.poppins(
+                      fontSize: 16,
+                      fontWeight: FontWeight.w700,
+                      color: const Color(0xFFF8F7F2),
+                    ),
+                  ),
+                ),
+              ],
+            );
           }
         } catch (error) {
           print('Error: $error');
+          return Dialogs.materialDialog(
+            context: context,
+            title: 'Something went wrong',
+            lottieBuilder: Lottie.asset('assets/animations/error.json',
+                fit: BoxFit.contain),
+            titleAlign: TextAlign.center,
+            msg: 'Please try again later.',
+            msgAlign: TextAlign.center,
+            msgStyle: GoogleFonts.poppins(
+              fontSize: 16.0,
+              fontStyle: FontStyle.italic,
+              fontWeight: FontWeight.w500,
+              color: const Color(0xFF000000),
+            ),
+            color: const Color(0xFFF8F7F2),
+            titleStyle: GoogleFonts.poppins(
+              fontSize: 20.0,
+              fontWeight: FontWeight.w600,
+              color: const Color(0xFF000000),
+            ),
+            actions: [
+              PushableButton(
+                onPressed: () {
+                  Navigator.pop(context);
+                },
+                hslColor: HSLColor.fromColor(const Color(0xFF888789)),
+                shadow: const BoxShadow(
+                  color: Color(0xFF505457),
+                ),
+                height: 50,
+                elevation: 8,
+                child: Text(
+                  'Try Again',
+                  style: GoogleFonts.poppins(
+                    fontSize: 16,
+                    fontWeight: FontWeight.w700,
+                    color: const Color(0xFFF8F7F2),
+                  ),
+                ),
+              ),
+            ],
+          );
         }
       }
     }
@@ -96,7 +270,7 @@ class _SignInPageState extends State<SignInPage> {
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
                   Padding(
-                    padding: const EdgeInsets.only(top: 90.0),
+                    padding: const EdgeInsets.only(top: 50.0),
                     child: Image.asset(
                       'assets/images/Ayo_logo.png',
                       width: 245.22,
@@ -150,6 +324,17 @@ class _SignInPageState extends State<SignInPage> {
                             }
                             if (!value.contains('@')) {
                               return 'Please enter a valid email address';
+                            }
+                            if (!value.contains('.com')) {
+                              return 'Please enter a valid email address';
+                            }
+                            if (value.contains(RegExp(
+                                r'\b(SELECT|UPDATE|DELETE|INSERT|DROP)\b'))) {
+                              return 'Invalid input';
+                            }
+                            if (value.contains(
+                                RegExp(r'<(?:\/?[a-z]|[a-z]+\s*\/?)>'))) {
+                              return 'Invalid input';
                             }
                             return null;
                           },
@@ -224,9 +409,7 @@ class _SignInPageState extends State<SignInPage> {
                                 });
                               },
                               child: Icon(
-                                _isObscure
-                                    ? Icons.visibility
-                                    : Icons.visibility_off,
+                                _isObscure ? Iconsax.eye : Iconsax.eye_slash,
                                 color: const Color(0xFFC3C3C3),
                               ),
                             ),
@@ -256,7 +439,6 @@ class _SignInPageState extends State<SignInPage> {
                       children: [
                         InkWell(
                           onTap: () {
-                            //test
                             Navigator.pushNamed(context, '/forgotPwd');
                           },
                           child: Padding(
@@ -274,7 +456,7 @@ class _SignInPageState extends State<SignInPage> {
                       ],
                     ),
                   ),
-                  const SizedBox(height: 200.0),
+                  const SizedBox(height: 140.0),
                   Padding(
                     padding: const EdgeInsets.only(
                       top: 10.0,

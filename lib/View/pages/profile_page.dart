@@ -1,8 +1,11 @@
-import 'dart:io';
+// ignore_for_file: use_build_context_synchronously
+
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:image_picker_android/image_picker_android.dart';
-import 'package:image_picker_platform_interface/image_picker_platform_interface.dart';
+import 'package:iconsax/iconsax.dart';
+import 'package:material_dialogs/material_dialogs.dart';
+import 'package:material_dialogs/shared/types.dart';
+import 'package:pushable_button/pushable_button.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class ProfilePage extends StatefulWidget {
@@ -13,12 +16,21 @@ class ProfilePage extends StatefulWidget {
 }
 
 class _ProfilePageState extends State<ProfilePage> {
-  File? _image;
-  final ImagePickerPlatform _picker = ImagePickerPlatform.instance;
+  late String _name = '';
+  late String _email = '';
 
   @override
   void initState() {
     super.initState();
+    _getUserInfo();
+  }
+
+  void _getUserInfo() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    setState(() {
+      _name = prefs.getString('name') ?? '';
+      _email = prefs.getString('email') ?? '';
+    });
   }
 
   @override
@@ -26,29 +38,69 @@ class _ProfilePageState extends State<ProfilePage> {
     super.dispose();
   }
 
-  Future<void> _pickImage() async {
-    if (_picker is ImagePickerAndroid) {
-      (_picker as ImagePickerAndroid).useAndroidPhotoPicker = true;
-    }
-
-    final pickedImage = await _picker.getImage(source: ImageSource.gallery);
-    if (pickedImage != null) {
-      setState(() {
-        _image = File(pickedImage.path);
-      });
-    }
-  }
-
-  void _navigateToEditProfile() {
-    Navigator.pushNamed(context, '/editProfile');
+  Future<void> _showLogOutPrompt() async {
+    return Dialogs.materialDialog(
+      context: context,
+      customViewPosition: CustomViewPosition.BEFORE_ACTION,
+      title: 'Are you sure you want to logout?',
+      titleAlign: TextAlign.center,
+      color: const Color(0xFFB2BBDA),
+      titleStyle: GoogleFonts.poppins(
+        fontSize: 20.0,
+        fontWeight: FontWeight.w600,
+        color: const Color(0xFF505457),
+      ),
+      actions: [
+        Container(
+          child: PushableButton(
+            onPressed: () {
+              // Handle 'Cancel' button logic
+              Navigator.pop(context);
+            },
+            hslColor: HSLColor.fromColor(const Color(0xFFF8F9FC)),
+            shadow: const BoxShadow(
+              color: Color(0xFFF8F9FC),
+            ),
+            height: 50,
+            elevation: 8,
+            child: Text(
+              'Cancel',
+              style: GoogleFonts.poppins(
+                fontSize: 18.0,
+                fontWeight: FontWeight.w600,
+                color: const Color(0xFF888789),
+              ),
+            ),
+          ),
+        ),
+        Container(
+          child: PushableButton(
+            onPressed: () {
+              // Handle 'Delete' button logic
+              _logout();
+            },
+            hslColor: HSLColor.fromColor(const Color(0xFF2A4F92)),
+            shadow: const BoxShadow(
+              color: Color(0xFF2A4F92),
+            ),
+            height: 50,
+            elevation: 8,
+            child: Text(
+              'Confirm',
+              style: GoogleFonts.poppins(
+                fontSize: 16,
+                fontWeight: FontWeight.w700,
+                color: const Color(0xFFF8F9FC),
+              ),
+            ),
+          ),
+        ),
+      ],
+    );
   }
 
   void _navigateToResetPassword() {
     Navigator.pushNamed(context, '/resetPassword');
-  }
-
-  void _navigateToEventHistory() {
-    Navigator.pushNamed(context, '/eventHist');
   }
 
   void _logout() async {
@@ -67,7 +119,6 @@ class _ProfilePageState extends State<ProfilePage> {
       backgroundColor: const Color(0xFFFFFCF9),
       body: SingleChildScrollView(
         child: Column(
-          // crossAxisAlignment: CrossAxisAlignment.start,
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
             const SizedBox(height: 50),
@@ -89,14 +140,13 @@ class _ProfilePageState extends State<ProfilePage> {
             ),
             const SizedBox(height: 20),
             Center(
-              child: GestureDetector(
-                onTap: _pickImage,
-                child: CircleAvatar(
-                  radius: 90,
-                  backgroundColor: const Color(0xFFB3AE99),
-                  child: CircleAvatar(
-                    radius: 85,
-                    backgroundImage: _image != null ? FileImage(_image!) : null,
+              child: CircleAvatar(
+                radius: 90,
+                backgroundColor: const Color.fromARGB(255, 199, 194, 172),
+                child: ClipOval(
+                  child: Image.asset(
+                    'assets/images/Ayo_logo.png',
+                    fit: BoxFit.cover,
                   ),
                 ),
               ),
@@ -106,7 +156,7 @@ class _ProfilePageState extends State<ProfilePage> {
               padding: const EdgeInsets.only(top: 2),
               child: Center(
                 child: Container(
-                  width: 276,
+                  width: 320,
                   height: 70,
                   decoration: BoxDecoration(
                     color: const Color.fromARGB(57, 174, 153, 77),
@@ -122,17 +172,17 @@ class _ProfilePageState extends State<ProfilePage> {
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           Row(
-                            children: const [
-                              SizedBox(width: 10),
-                              Icon(
+                            children: [
+                              const SizedBox(width: 10),
+                              const Icon(
                                 Icons.person,
                                 color: Colors.black,
                                 size: 20,
                               ),
-                              SizedBox(width: 10),
+                              const SizedBox(width: 10),
                               Text(
-                                'John Doe',
-                                style: TextStyle(
+                                _name,
+                                style: const TextStyle(
                                   color: Color(0xFF1E3765),
                                   fontSize: 14,
                                   fontFamily: 'Poppins',
@@ -143,17 +193,17 @@ class _ProfilePageState extends State<ProfilePage> {
                           ),
                           const SizedBox(height: 5),
                           Row(
-                            children: const [
-                              SizedBox(width: 10),
-                              Icon(
+                            children: [
+                              const SizedBox(width: 10),
+                              const Icon(
                                 Icons.email,
                                 color: Colors.black,
                                 size: 20,
                               ),
-                              SizedBox(width: 10),
+                              const SizedBox(width: 10),
                               Text(
-                                'johndoe@mail.com',
-                                style: TextStyle(
+                                _email,
+                                style: const TextStyle(
                                   color: Color(0xFF1E3765),
                                   fontSize: 14,
                                   fontFamily: 'Poppins',
@@ -169,29 +219,19 @@ class _ProfilePageState extends State<ProfilePage> {
                 ),
               ),
             ),
-            const SizedBox(height: 20),
-            ProfileOption(
-              title: 'Edit Profile',
-              icon: Icons.edit,
-              onPressed: _navigateToEditProfile,
-            ),
-            const SizedBox(height: 20),
+            const SizedBox(height: 30),
             ProfileOption(
               title: 'Reset Password',
-              icon: Icons.vpn_key,
+              icon: Iconsax.key_square,
               onPressed: _navigateToResetPassword,
             ),
-            const SizedBox(height: 20),
-            ProfileOption(
-              title: 'Event History',
-              icon: Icons.calendar_today,
-              onPressed: _navigateToEventHistory,
-            ),
-            const SizedBox(height: 20),
+            const SizedBox(height: 30),
             ProfileOption(
               title: 'Logout',
-              icon: Icons.logout,
-              onPressed: _logout,
+              icon: Iconsax.logout,
+              onPressed: () {
+                _showLogOutPrompt();
+              },
             ),
           ],
         ),

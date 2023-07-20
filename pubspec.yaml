@@ -17,17 +17,13 @@ dependencies:
   jwt_decoder: ^2.0.1
   pushable_button: ^0.0.2
   shared_preferences: ^2.1.2
-  fk_toggle: ^0.1.1
   flutter_animated_button: ^2.0.3
   intl: ^0.18.1
   toggle_switch: ^2.1.0
-  add_2_calendar: ^2.2.3
-  syncfusion_flutter_calendar: ^22.1.37
-  device_calendar: ^4.3.1
   material_dialogs: ^1.1.4
-  table_calendar: ^3.0.9
-  flutter_event_calendar: ^1.0.0
-  permission_handler: ^10.4.3
+  ficonsax: ^0.0.3
+  iconsax: ^0.0.8
+  lottie: ^2.5.0
 
 dev_dependencies:
   flutter_test:
@@ -39,6 +35,7 @@ flutter:
     - assets/
     - assets/images/
     - assets/fonts/
+    - assets/animations/
   fonts:
     - family: Poppins
       fonts:

@@ -1,5 +1,6 @@
 import 'package:convex_bottom_bar/convex_bottom_bar.dart';
 import 'package:flutter/material.dart';
+import 'package:ficonsax/ficonsax.dart';
 
 class BottomNavBar extends StatefulWidget {
   final int currentIndex;
@@ -22,20 +23,24 @@ class _BottomNavBarState extends State<BottomNavBar> {
   Widget build(BuildContext context) {
     return ConvexAppBar(
       controller: widget.tabController,
-      style: TabStyle.react,
+      style: TabStyle.reactCircle,
+      curveSize: 100.0,
+      height: 50.0,
       items: const [
         TabItem(
-          icon: Icon(Icons.home_sharp, size: 30, color: Color(0xFFB0C6D4)),
+          icon: Icon(IconsaxBold.home, size: 30.0, color: Color(0xFFB2BBDA)),
         ),
         TabItem(
-          icon: Icon(Icons.add_box, size: 30, color: Color(0xFFB0C6D4)),
+          icon: Icon(IconsaxBold.add_square,
+              size: 30.0, color: Color(0xFFB2BBDA)),
         ),
         TabItem(
-          icon: Icon(Icons.person_2_sharp, size: 30, color: Color(0xFFB0C6D4)),
+          icon: Icon(IconsaxBold.user, size: 30.0, color: Color(0xFFB2BBDA)),
         ),
       ],
-      backgroundColor: const Color(0xFF202926),
+      backgroundColor: const Color(0xFF1E3765),
       initialActiveIndex: 0,
+      activeColor: const Color(0xFFF8F7F2),
       onTap: widget.onTap,
     );
   }

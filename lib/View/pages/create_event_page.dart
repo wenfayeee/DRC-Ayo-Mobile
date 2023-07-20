@@ -1,3 +1,5 @@
+// ignore_for_file: use_build_context_synchronously
+
 import 'dart:convert';
 
 import 'package:event_management_app/Functions/config.dart';
@@ -8,6 +10,9 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:http/http.dart' as http;
 import 'package:intl/intl.dart';
 import 'package:jwt_decoder/jwt_decoder.dart';
+import 'package:lottie/lottie.dart';
+import 'package:material_dialogs/material_dialogs.dart';
+import 'package:pushable_button/pushable_button.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class CreateEventPage extends StatefulWidget {
@@ -21,6 +26,7 @@ class CreateEventPage extends StatefulWidget {
 class _CreateEventPageState extends State<CreateEventPage> {
   String? token;
   String? email;
+
   final _formKey = GlobalKey<FormState>();
   final _titleController = TextEditingController();
   final _dateController = TextEditingController();
@@ -32,9 +38,24 @@ class _CreateEventPageState extends State<CreateEventPage> {
   final _eventCodeController = TextEditingController();
   final _inviteeEmailController = TextEditingController();
 
+  bool validateRSVPDateTime() {
+    final eventDateTime =
+        DateTime.parse('${_dateController.text}T${_timeController.text}');
+    final rsvpDeadlineDateTime = DateTime.parse(
+        '${_rsvpDateController.text}T${_rsvpTimeController.text}');
+
+    if (rsvpDeadlineDateTime.isAfter(eventDateTime)) {
+      setState(() {
+        _rsvpDateController.text = '';
+        _rsvpTimeController.text = '';
+      });
+      return false;
+    }
+    return true;
+  }
+
   @override
   void initState() {
-    print("hi" + "$widget");
     super.initState();
     getTokenFromSharedPrefs();
   }
@@ -46,7 +67,6 @@ class _CreateEventPageState extends State<CreateEventPage> {
     if (storedToken != null) {
       setState(() {
         token = storedToken;
-        print(token);
       });
       decodeToken();
     }
@@ -76,95 +96,6 @@ class _CreateEventPageState extends State<CreateEventPage> {
     _inviteeEmailController.dispose();
   }
 
-  // void addEvent() async {
-  //   if (_titleController.text.isNotEmpty &&
-  //       _dateController.text.isNotEmpty &&
-  //       _timeController.text.isNotEmpty &&
-  //       _venueController.text.isNotEmpty &&
-  //       _descriptionController.text.isNotEmpty &&
-  //       _rsvpDateController.text.isNotEmpty &&
-  //       _rsvpTimeController.text.isNotEmpty &&
-  //       _eventCodeController.text.isNotEmpty &&
-  //       _inviteeEmailController.text.isNotEmpty) {
-  //     var regBody = {
-  //       "title": _titleController.text,
-  //       "date": _dateController.text,
-  //       "time": _timeController.text,
-  //       "venue": _venueController.text,
-  //       "description": _descriptionController.text,
-  //       "rsvpDate": _rsvpDateController.text,
-  //       "rsvpTime": _rsvpTimeController.text,
-  //       "eventCode": _eventCodeController.text,
-  //       "inviteeEmail": _inviteeEmailController.text,
-  //       "email": email,
-  //     };
-
-  //     print('hi');
-  //     var response = await http.post(Uri.parse(createEvent),
-  //         headers: {
-  //           "Content-Type": "application/json",
-  //           "Authorization": "Bearer ${widget.token}"
-  //         },
-  //         body: jsonEncode(regBody));
-
-  //     var jsonResponse;
-  //     if (response.body != null) {
-  //       jsonResponse = jsonDecode(response.body) as Map<String, dynamic>;
-  //     }
-
-  //     var statusCode = jsonResponse['statusCode'] as int?;
-
-  //     print(jsonResponse['statusCode']);
-
-  //     if (response.statusCode == 201) {
-  //       _titleController.clear();
-  //       _dateController.clear();
-  //       _timeController.clear();
-  //       _venueController.clear();
-  //       _descriptionController.clear();
-  //       _rsvpDateController.clear();
-  //       _rsvpTimeController.clear();
-  //       _eventCodeController.clear();
-  //       _inviteeEmailController.clear();
-  //       Navigator.pop(context);
-  //       print('Event added successfully');
-  //     } else if (response.statusCode == 500) {
-  //       print('Event addition failed');
-  //     } else {
-  //       print('Some other error lol');
-  //     }
-  //     // try {
-  //     //   var response = await http.post(
-  //     //     Uri.parse(createEvent),
-  //     //     headers: {
-  //     //       "Content-Type": "application/json; charset=utf-8",
-  //     //       "Authorization": "Bearer ${widget.token}"
-  //     //     },
-  //     //     body: jsonEncode(regBody),
-  //     //   );
-
-  //     //   print('${widget.token}');
-
-  //     //   // stuck at the code below this
-  //     //   if (response.statusCode == 200) {
-  //     //     var jsonResponse = jsonDecode(response.body);
-  //     //     var success = jsonResponse['success'];
-  //     //     var message = jsonResponse['message'];
-
-  //     //     print('adding');
-
-  //     //     if (success) {
-  //     //       print("Event added successfully");
-  //     //     } else {
-  //     //       print("Event addition failed");
-  //     //     }
-  //     //   }
-  //     // } catch (error) {
-  //     //   print('Request failed with error $error');
-  //     //   Navigator.pushNamed(context, '/error');
-  //     // }
-  //   }
-  // }
   void addEvent() async {
     if (_formKey.currentState?.validate() ?? false) {
       if (_titleController.text.isNotEmpty &&
@@ -196,49 +127,330 @@ class _CreateEventPageState extends State<CreateEventPage> {
           var response = await http.post(
             Uri.parse(createEvent),
             headers: {
-              "Content-Type": "application/json; charset=utf-8",
+              "Content-Type": "application/json",
               "Authorization": "Bearer $token"
             },
             body: jsonEncode(regBody),
           );
 
-          var jsonResponse = jsonDecode(response.body) as Map<String, dynamic>;
-          var statusCode = jsonResponse['statusCode'] as int?;
-
-          print(regBody);
-          if (response.statusCode == 201) {
-            _titleController.clear();
-            _dateController.clear();
-            _timeController.clear();
-            _venueController.clear();
-            _descriptionController.clear();
-            _rsvpDateController.clear();
-            _rsvpTimeController.clear();
-            _eventCodeController.clear();
-            _inviteeEmailController.clear();
-
-            // SharedPreferences prefs = await SharedPreferences.getInstance();
-            // await prefs.getString('token');
-            print('Event added successfully');
-            ScaffoldMessenger.of(context).showSnackBar(
-              const SnackBar(
-                content: Text('Event added successfully'),
-                duration: Duration(seconds: 3),
-                behavior: SnackBarBehavior.floating,
-                backgroundColor: Colors.green,
+          var jsonResponse = jsonDecode(response.body);
+          if (jsonResponse is Map<String, dynamic>) {
+            // Handle response as Map<String, dynamic>
+            var statusCode = jsonResponse['statusCode'] as int?;
+            if (response.statusCode == 201) {
+              _titleController.clear();
+              _dateController.clear();
+              _timeController.clear();
+              _venueController.clear();
+              _descriptionController.clear();
+              _rsvpDateController.clear();
+              _rsvpTimeController.clear();
+              _eventCodeController.clear();
+              _inviteeEmailController.clear();
+              return Dialogs.materialDialog(
+                context: context,
+                title: 'Success!',
+                lottieBuilder: Lottie.asset('assets/animations/success.json',
+                    fit: BoxFit.contain),
+                titleAlign: TextAlign.center,
+                msg:
+                    'Great! You have successfully created the event. Your event details can be viewed through the homepage.',
+                msgAlign: TextAlign.center,
+                msgStyle: GoogleFonts.poppins(
+                  fontSize: 16.0,
+                  fontStyle: FontStyle.italic,
+                  fontWeight: FontWeight.w500,
+                  color: const Color(0xFF000000),
+                ),
+                color: const Color(0xFFF8F7F2),
+                titleStyle: GoogleFonts.poppins(
+                  fontSize: 20.0,
+                  fontWeight: FontWeight.w600,
+                  color: const Color(0xFF000000),
+                ),
+                actions: [
+                  PushableButton(
+                    onPressed: () {
+                      Navigator.pushNamed(context, '/navigator');
+                    },
+                    hslColor: HSLColor.fromColor(const Color(0xFF888789)),
+                    shadow: const BoxShadow(
+                      color: Color(0xFF505457),
+                    ),
+                    height: 50,
+                    elevation: 8,
+                    child: Text(
+                      'Continue',
+                      style: GoogleFonts.poppins(
+                        fontSize: 16,
+                        fontWeight: FontWeight.w700,
+                        color: const Color(0xFFF8F7F2),
+                      ),
+                    ),
+                  ),
+                ],
+              );
+            } else if (response.statusCode == 500) {
+              return Dialogs.materialDialog(
+                context: context,
+                title: 'Event addition failed',
+                lottieBuilder: Lottie.asset('assets/animations/error.json',
+                    fit: BoxFit.contain),
+                titleAlign: TextAlign.center,
+                msg: 'Please try again.',
+                msgStyle: GoogleFonts.poppins(
+                  fontSize: 16.0,
+                  fontStyle: FontStyle.italic,
+                  fontWeight: FontWeight.w500,
+                  color: const Color(0xFF000000),
+                ),
+                color: const Color(0xFFF8F7F2),
+                titleStyle: GoogleFonts.poppins(
+                  fontSize: 20.0,
+                  fontWeight: FontWeight.w600,
+                  color: const Color(0xFF000000),
+                ),
+                actions: [
+                  PushableButton(
+                    onPressed: () {
+                      Navigator.pop(context);
+                    },
+                    hslColor: HSLColor.fromColor(const Color(0xFF888789)),
+                    shadow: const BoxShadow(
+                      color: Color(0xFF505457),
+                    ),
+                    height: 50,
+                    elevation: 8,
+                    child: Text(
+                      'Try Again',
+                      style: GoogleFonts.poppins(
+                        fontSize: 16,
+                        fontWeight: FontWeight.w700,
+                        color: const Color(0xFFF8F7F2),
+                      ),
+                    ),
+                  ),
+                ],
+              );
+            } else {
+              return Dialogs.materialDialog(
+                context: context,
+                title: 'Something went wrong.',
+                lottieBuilder: Lottie.asset('assets/animations/error.json',
+                    fit: BoxFit.contain),
+                titleAlign: TextAlign.center,
+                msg: 'Please try again later.',
+                msgStyle: GoogleFonts.poppins(
+                  fontSize: 16.0,
+                  fontStyle: FontStyle.italic,
+                  fontWeight: FontWeight.w500,
+                  color: const Color(0xFF000000),
+                ),
+                color: const Color(0xFFF8F7F2),
+                titleStyle: GoogleFonts.poppins(
+                  fontSize: 20.0,
+                  fontWeight: FontWeight.w600,
+                  color: const Color(0xFF000000),
+                ),
+                actions: [
+                  PushableButton(
+                    onPressed: () {
+                      Navigator.pop(context);
+                    },
+                    hslColor: HSLColor.fromColor(const Color(0xFF888789)),
+                    shadow: const BoxShadow(
+                      color: Color(0xFF505457),
+                    ),
+                    height: 50,
+                    elevation: 8,
+                    child: Text(
+                      'Try Again',
+                      style: GoogleFonts.poppins(
+                        fontSize: 16,
+                        fontWeight: FontWeight.w700,
+                        color: const Color(0xFFF8F7F2),
+                      ),
+                    ),
+                  ),
+                ],
+              );
+            }
+          } else if (jsonResponse is List<dynamic>) {
+            return Dialogs.materialDialog(
+              context: context,
+              title: 'Success!',
+              lottieBuilder: Lottie.asset('assets/animations/success.json',
+                  fit: BoxFit.contain),
+              titleAlign: TextAlign.center,
+              msg:
+                  'Great! You have successfully created the event. Your event details can be viewed through the homepage.',
+              msgAlign: TextAlign.center,
+              msgStyle: GoogleFonts.poppins(
+                fontSize: 16.0,
+                fontStyle: FontStyle.italic,
+                fontWeight: FontWeight.w500,
+                color: const Color(0xFF000000),
               ),
+              color: const Color(0xFFF8F7F2),
+              titleStyle: GoogleFonts.poppins(
+                fontSize: 20.0,
+                fontWeight: FontWeight.w600,
+                color: const Color(0xFF000000),
+              ),
+              actions: [
+                PushableButton(
+                  onPressed: () {
+                    Navigator.pushNamed(context, '/navigator');
+                  },
+                  hslColor: HSLColor.fromColor(const Color(0xFF888789)),
+                  shadow: const BoxShadow(
+                    color: Color(0xFF505457),
+                  ),
+                  height: 50,
+                  elevation: 8,
+                  child: Text(
+                    'Continue',
+                    style: GoogleFonts.poppins(
+                      fontSize: 16,
+                      fontWeight: FontWeight.w700,
+                      color: const Color(0xFFF8F7F2),
+                    ),
+                  ),
+                ),
+              ],
             );
-            await Future.delayed(const Duration(seconds: 3));
-            Navigator.pushNamed(context, '/navigator');
-          } else if (response.statusCode == 500) {
-            print('Event addition failed');
           } else {
-            print('Something went wrong');
+            return Dialogs.materialDialog(
+              context: context,
+              title: 'Something went wrong.',
+              lottieBuilder: Lottie.asset('assets/animations/error.json',
+                  fit: BoxFit.contain),
+              titleAlign: TextAlign.center,
+              msg: 'Please try again later.',
+              msgStyle: GoogleFonts.poppins(
+                fontSize: 16.0,
+                fontStyle: FontStyle.italic,
+                fontWeight: FontWeight.w500,
+                color: const Color(0xFF000000),
+              ),
+              color: const Color(0xFFF8F7F2),
+              titleStyle: GoogleFonts.poppins(
+                fontSize: 20.0,
+                fontWeight: FontWeight.w600,
+                color: const Color(0xFF000000),
+              ),
+              actions: [
+                PushableButton(
+                  onPressed: () {
+                    Navigator.pop(context);
+                  },
+                  hslColor: HSLColor.fromColor(const Color(0xFF888789)),
+                  shadow: const BoxShadow(
+                    color: Color(0xFF505457),
+                  ),
+                  height: 50,
+                  elevation: 8,
+                  child: Text(
+                    'Try Again',
+                    style: GoogleFonts.poppins(
+                      fontSize: 16,
+                      fontWeight: FontWeight.w700,
+                      color: const Color(0xFFF8F7F2),
+                    ),
+                  ),
+                ),
+              ],
+            );
           }
         } catch (error) {
-          print('Error: $error');
+          return Dialogs.materialDialog(
+            context: context,
+            title: 'Error',
+            lottieBuilder: Lottie.asset('assets/animations/error.json',
+                fit: BoxFit.contain),
+            titleAlign: TextAlign.center,
+            msg: 'Something went wrong. Please try again later.',
+            msgAlign: TextAlign.center,
+            msgStyle: GoogleFonts.poppins(
+              fontSize: 16.0,
+              fontStyle: FontStyle.italic,
+              fontWeight: FontWeight.w500,
+              color: const Color(0xFF000000),
+            ),
+            color: const Color(0xFFF8F7F2),
+            titleStyle: GoogleFonts.poppins(
+              fontSize: 20.0,
+              fontWeight: FontWeight.w600,
+              color: const Color(0xFF000000),
+            ),
+            actions: [
+              PushableButton(
+                onPressed: () {
+                  Navigator.pop(context);
+                },
+                hslColor: HSLColor.fromColor(const Color(0xFFB2BBDA)),
+                shadow: const BoxShadow(
+                  color: Color(0xFF1E3765),
+                ),
+                height: 50,
+                elevation: 8,
+                child: Text(
+                  'Try Again',
+                  style: GoogleFonts.poppins(
+                    fontSize: 16,
+                    fontWeight: FontWeight.w700,
+                    color: const Color(0xFFF8F7F2),
+                  ),
+                ),
+              ),
+            ],
+          );
         }
       }
+    } else {
+      return Dialogs.materialDialog(
+        context: context,
+        title: 'Error',
+        lottieBuilder:
+            Lottie.asset('assets/animations/error.json', fit: BoxFit.contain),
+        titleAlign: TextAlign.center,
+        msg:
+            'RSVP deadline cannot be later than event date.\nPlease re-enter a valid date',
+        msgAlign: TextAlign.center,
+        msgStyle: GoogleFonts.poppins(
+          fontSize: 16.0,
+          fontStyle: FontStyle.italic,
+          fontWeight: FontWeight.w500,
+          color: const Color(0xFF000000),
+        ),
+        color: const Color(0xFFF8F7F2),
+        titleStyle: GoogleFonts.poppins(
+          fontSize: 20.0,
+          fontWeight: FontWeight.w600,
+          color: const Color(0xFF000000),
+        ),
+        actions: [
+          PushableButton(
+            onPressed: () {
+              Navigator.pop(context);
+            },
+            hslColor: HSLColor.fromColor(const Color(0xFFB2BBDA)),
+            shadow: const BoxShadow(
+              color: Color(0xFF1E3765),
+            ),
+            height: 50,
+            elevation: 8,
+            child: Text(
+              'Try Again',
+              style: GoogleFonts.poppins(
+                fontSize: 16,
+                fontWeight: FontWeight.w700,
+                color: const Color(0xFFF8F7F2),
+              ),
+            ),
+          ),
+        ],
+      );
     }
   }
 
@@ -255,7 +467,7 @@ class _CreateEventPageState extends State<CreateEventPage> {
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  const SizedBox(height: 15),
+                  const SizedBox(height: 15.0),
                   Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
@@ -312,6 +524,12 @@ class _CreateEventPageState extends State<CreateEventPage> {
                           fontWeight: FontWeight.w500,
                           color: const Color(0xFF000000)),
                       decoration: const InputDecoration(
+                        labelText: 'Title',
+                        labelStyle: TextStyle(
+                            fontFamily: 'Poppins',
+                            fontSize: 22.0,
+                            fontWeight: FontWeight.bold,
+                            color: Color(0xFF000000)),
                         filled: true,
                         fillColor: Color(0xFFFFFFFF),
                         hintText: 'Title',
@@ -330,9 +548,22 @@ class _CreateEventPageState extends State<CreateEventPage> {
                         ),
                         alignLabelWithHint: true,
                       ),
+                      validator: (value) {
+                        if (value == null || value.trim().isEmpty) {
+                          return 'Please enter event title.';
+                        }
+                        if (value.length > 51) {
+                          return 'Event name can be maximum \n50 characters only';
+                        }
+                        if (value.contains(RegExp(
+                            r'\b(SELECT|UPDATE|DELETE|INSERT|DROP)\b'))) {
+                          return 'Invalid input';
+                        }
+                        return null;
+                      },
                     ),
                   ),
-                  const SizedBox(height: 16.0),
+                  const SizedBox(height: 20.0),
                   Row(
                     children: [
                       Expanded(
@@ -368,7 +599,7 @@ class _CreateEventPageState extends State<CreateEventPage> {
                             },
                             validator: (value) {
                               if (value == null || value.isEmpty) {
-                                return 'Please enter a date.';
+                                return 'Please select \nevent date.';
                               }
                               return null;
                             },
@@ -380,6 +611,12 @@ class _CreateEventPageState extends State<CreateEventPage> {
                               color: const Color(0xFF000000),
                             ),
                             decoration: const InputDecoration(
+                              labelText: 'Event Date',
+                              labelStyle: TextStyle(
+                                  fontFamily: 'Poppins',
+                                  fontSize: 22.0,
+                                  fontWeight: FontWeight.bold,
+                                  color: Color(0xFF000000)),
                               filled: true,
                               fillColor: Color(0xFFFFFFFF),
                               hintText: 'Event Date',
@@ -434,8 +671,13 @@ class _CreateEventPageState extends State<CreateEventPage> {
                               if (selectedTime != null) {
                                 final formattedTime =
                                     DateFormat('HH:mm:ss').format(selectedTime);
-                                print('Selected time: $formattedTime');
                               }
+                            },
+                            validator: (value) {
+                              if (value == null || value.isEmpty) {
+                                return 'Please select \nevent time.';
+                              }
+                              return null;
                             },
                             controller: _timeController,
                             keyboardType: TextInputType.datetime,
@@ -444,6 +686,12 @@ class _CreateEventPageState extends State<CreateEventPage> {
                                 fontWeight: FontWeight.w500,
                                 color: const Color(0xFF000000)),
                             decoration: const InputDecoration(
+                              labelText: 'Event Time',
+                              labelStyle: TextStyle(
+                                  fontFamily: 'Poppins',
+                                  fontSize: 22.0,
+                                  fontWeight: FontWeight.bold,
+                                  color: Color(0xFF000000)),
                               filled: true,
                               fillColor: Color(0xFFFFFFFF),
                               hintText: 'Time',
@@ -467,7 +715,7 @@ class _CreateEventPageState extends State<CreateEventPage> {
                       ),
                     ],
                   ),
-                  const SizedBox(height: 5.0),
+                  const SizedBox(height: 8.0),
                   Padding(
                     padding: const EdgeInsets.only(
                         top: 10.0, left: 30.0, right: 30.0),
@@ -479,6 +727,12 @@ class _CreateEventPageState extends State<CreateEventPage> {
                           fontWeight: FontWeight.w500,
                           color: const Color(0xFF000000)),
                       decoration: const InputDecoration(
+                        labelText: 'Venue',
+                        labelStyle: TextStyle(
+                            fontFamily: 'Poppins',
+                            fontSize: 22.0,
+                            fontWeight: FontWeight.bold,
+                            color: Color(0xFF000000)),
                         filled: true,
                         fillColor: Color(0xFFFFFFFF),
                         hintText: 'Venue',
@@ -495,9 +749,22 @@ class _CreateEventPageState extends State<CreateEventPage> {
                         ),
                         alignLabelWithHint: true,
                       ),
+                      validator: (value) {
+                        if (value == null || value.trim().isEmpty) {
+                          return 'Please enter a venue/address.';
+                        }
+                        if (value.length > 101) {
+                          return 'Event address can only be 100 characters maximum.';
+                        }
+                        if (value.contains(RegExp(
+                            r'\b(SELECT|UPDATE|DELETE|INSERT|DROP)\b'))) {
+                          return 'Invalid input';
+                        }
+                        return null;
+                      },
                     ),
                   ),
-                  const SizedBox(height: 5.0),
+                  const SizedBox(height: 8.0),
                   Padding(
                     padding: const EdgeInsets.only(
                         top: 10.0, left: 30.0, right: 30.0),
@@ -510,6 +777,12 @@ class _CreateEventPageState extends State<CreateEventPage> {
                           fontWeight: FontWeight.w500,
                           color: const Color(0xFF000000)),
                       decoration: const InputDecoration(
+                        labelText: 'Detailed Description',
+                        labelStyle: TextStyle(
+                            fontFamily: 'Poppins',
+                            fontSize: 22.0,
+                            fontWeight: FontWeight.bold,
+                            color: Color(0xFF000000)),
                         filled: true,
                         fillColor: Color(0xFFFFFFFF),
                         hintText: 'Detailed Description',
@@ -526,6 +799,19 @@ class _CreateEventPageState extends State<CreateEventPage> {
                         ),
                         alignLabelWithHint: true,
                       ),
+                      validator: (value) {
+                        if (value == null || value.isEmpty) {
+                          return 'Please enter event description.';
+                        }
+                        if (value.length > 251) {
+                          return 'Event detail can only be maximum 250 characters';
+                        }
+                        if (value.contains(RegExp(
+                            r'\b(SELECT|UPDATE|DELETE|INSERT|DROP)\b'))) {
+                          return 'Invalid input';
+                        }
+                        return null;
+                      },
                     ),
                   ),
                   const SizedBox(height: 16.0),
@@ -578,6 +864,12 @@ class _CreateEventPageState extends State<CreateEventPage> {
                               color: const Color(0xFF000000),
                             ),
                             decoration: const InputDecoration(
+                              labelText: 'RSVP Date',
+                              labelStyle: TextStyle(
+                                  fontFamily: 'Poppins',
+                                  fontSize: 22.0,
+                                  fontWeight: FontWeight.bold,
+                                  color: Color(0xFF000000)),
                               filled: true,
                               fillColor: Color(0xFFFFFFFF),
                               hintText: 'RSVP Date',
@@ -596,6 +888,15 @@ class _CreateEventPageState extends State<CreateEventPage> {
                               ),
                               alignLabelWithHint: true,
                             ),
+                            validator: (value) {
+                              if (value == null || value.isEmpty) {
+                                return 'Please select RSVP \nbefore date';
+                              }
+                              if (!validateRSVPDateTime()) {
+                                return 'Please select RSVP \nbefore date';
+                              }
+                              return null;
+                            },
                           ),
                         ),
                       ),
@@ -641,7 +942,7 @@ class _CreateEventPageState extends State<CreateEventPage> {
                             },
                             validator: (value) {
                               if (value == null || value.isEmpty) {
-                                return 'Please enter time.';
+                                return 'Please select RSVP \nbefore time.';
                               }
                               return null;
                             },
@@ -653,6 +954,12 @@ class _CreateEventPageState extends State<CreateEventPage> {
                               color: const Color(0xFF000000),
                             ),
                             decoration: const InputDecoration(
+                              labelText: 'RSVP Time',
+                              labelStyle: TextStyle(
+                                  fontFamily: 'Poppins',
+                                  fontSize: 22.0,
+                                  fontWeight: FontWeight.bold,
+                                  color: Color(0xFF000000)),
                               filled: true,
                               fillColor: Color(0xFFFFFFFF),
                               hintText: 'RSVP Time',
@@ -676,7 +983,7 @@ class _CreateEventPageState extends State<CreateEventPage> {
                       ),
                     ],
                   ),
-                  const SizedBox(height: 5.0),
+                  const SizedBox(height: 8.0),
                   Padding(
                     padding: const EdgeInsets.only(
                         top: 10.0, left: 30.0, right: 30.0),
@@ -688,6 +995,12 @@ class _CreateEventPageState extends State<CreateEventPage> {
                           fontWeight: FontWeight.w500,
                           color: const Color(0xFF000000)),
                       decoration: const InputDecoration(
+                        labelText: 'Event Code',
+                        labelStyle: TextStyle(
+                            fontFamily: 'Poppins',
+                            fontSize: 22.0,
+                            fontWeight: FontWeight.bold,
+                            color: Color(0xFF000000)),
                         filled: true,
                         fillColor: Color(0xFFFFFFFF),
                         hintText: 'Event Code',
@@ -704,9 +1017,22 @@ class _CreateEventPageState extends State<CreateEventPage> {
                         ),
                         alignLabelWithHint: true,
                       ),
+                      validator: (value) {
+                        if (value == null || value.trim().isEmpty) {
+                          return 'Please enter an event code.';
+                        }
+                        if (value.length > 21) {
+                          return 'Event code can only be maximum 20 characters.';
+                        }
+                        if (value.contains(RegExp(
+                            r'\b(SELECT|UPDATE|DELETE|INSERT|DROP)\b'))) {
+                          return 'Invalid input';
+                        }
+                        return null;
+                      },
                     ),
                   ),
-                  const SizedBox(height: 5.0),
+                  const SizedBox(height: 8.0),
                   Padding(
                     padding: const EdgeInsets.only(
                         top: 10.0, left: 30.0, right: 30.0),
@@ -719,6 +1045,12 @@ class _CreateEventPageState extends State<CreateEventPage> {
                           fontWeight: FontWeight.w500,
                           color: const Color(0xFF000000)),
                       decoration: const InputDecoration(
+                        labelText: "Invitee's Email",
+                        labelStyle: TextStyle(
+                            fontFamily: 'Poppins',
+                            fontSize: 22.0,
+                            fontWeight: FontWeight.bold,
+                            color: Color(0xFF000000)),
                         filled: true,
                         fillColor: Color(0xFFFFFFFF),
                         hintText: "Invitee's Email",
@@ -735,6 +1067,26 @@ class _CreateEventPageState extends State<CreateEventPage> {
                         ),
                         alignLabelWithHint: true,
                       ),
+                      validator: (value) {
+                        if (value == null || value.isEmpty) {
+                          return 'Please enter invitee email(s)';
+                        }
+                        if (!value.contains('@')) {
+                          return 'Please enter a valid email address';
+                        }
+                        if (!value.contains('.com')) {
+                          return 'Please enter a valid email address';
+                        }
+                        if (value.contains(RegExp(
+                            r'\b(SELECT|UPDATE|DELETE|INSERT|DROP)\b'))) {
+                          return 'Invalid input';
+                        }
+                        if (value
+                            .contains(RegExp(r'<(?:\/?[a-z]|[a-z]+\s*\/?)>'))) {
+                          return 'Invalid input';
+                        }
+                        return null;
+                      },
                     ),
                   ),
                 ],

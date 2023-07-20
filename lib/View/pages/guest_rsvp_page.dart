@@ -1,7 +1,14 @@
+// ignore_for_file: use_build_context_synchronously
+
+import 'package:ficonsax/ficonsax.dart';
 import 'package:flutter/material.dart';
 import 'package:event_management_app/Functions/config.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:iconsax/iconsax.dart';
 import 'package:jwt_decoder/jwt_decoder.dart';
+import 'package:lottie/lottie.dart';
+import 'package:material_dialogs/dialogs.dart';
+import 'package:pushable_button/pushable_button.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
@@ -14,14 +21,14 @@ class GuestRSVPPage extends StatefulWidget {
       : super(key: key);
 
   @override
-  _GuestRSVPPageState createState() => _GuestRSVPPageState();
+  State<GuestRSVPPage> createState() => _GuestRSVPPageState();
 }
 
 class _GuestRSVPPageState extends State<GuestRSVPPage> {
   String? token;
   String? email;
   String? eventCode;
-  String dropdownValue = 'All';
+  String dropdownValue = 'Invited';
   List<String> guestsRSVPYes = [];
   List<String> guestsRSVPNo = [];
   List<String> filteredGuests = [];
@@ -30,8 +37,6 @@ class _GuestRSVPPageState extends State<GuestRSVPPage> {
   void initState() {
     super.initState();
     getTokenFromSharedPrefs();
-    print('RSVPPage init');
-    // fetchGuestsRSVP();
     decodeToken();
   }
 
@@ -48,7 +53,6 @@ class _GuestRSVPPageState extends State<GuestRSVPPage> {
     if (storedToken != null) {
       setState(() {
         token = storedToken;
-        print(token);
       });
       decodeToken();
     }
@@ -58,7 +62,7 @@ class _GuestRSVPPageState extends State<GuestRSVPPage> {
     Map<String, dynamic>? jwtDecodedToken;
     if (widget.token != null) {
       jwtDecodedToken = JwtDecoder.decode(widget.token!);
-      if (jwtDecodedToken!.containsKey('email')) {
+      if (jwtDecodedToken.containsKey('email')) {
         email = jwtDecodedToken['email'] as String?;
       }
     }
@@ -81,38 +85,72 @@ class _GuestRSVPPageState extends State<GuestRSVPPage> {
           guestsYesResponse.statusCode == 200 &&
           guestsNoResponse.statusCode == 200) {
         var eventJsonResponse = jsonDecode(eventResponse.body);
-        var guestsYesJsonResponse = jsonDecode(guestsYesResponse.body) as List<dynamic>;
-        var guestsNoJsonResponse = jsonDecode(guestsNoResponse.body) as List<dynamic>;
-
-        print("Event details:");
-        print(eventJsonResponse);
-        print("Guests who RSVP'd Yes:");
-        print(guestsYesJsonResponse);
-        print("Guests who RSVP'd No:");
-        print(guestsNoJsonResponse);
+        var guestsYesJsonResponse =
+            jsonDecode(guestsYesResponse.body) as List<dynamic>;
+        var guestsNoJsonResponse =
+            jsonDecode(guestsNoResponse.body) as List<dynamic>;
 
         setState(() {
           guestsRSVPYes = guestsYesJsonResponse
-      .map((guest) => guest['invitee_email'] as String)
-      .toList();
+              .map((guest) => guest['invitee_email'] as String)
+              .toList();
           guestsRSVPNo = guestsNoJsonResponse
-      .map((guest) => guest['invitee_email'] as String)
-      .toList();
+              .map((guest) => guest['invitee_email'] as String)
+              .toList();
 
           // Filter guests based on the dropdown value
-          if (dropdownValue == 'All') {
+          if (dropdownValue == 'Invited') {
             filteredGuests = guestsRSVPYes + guestsRSVPNo;
-          } else if (dropdownValue == 'Accepted Invitations') {
+          } else if (dropdownValue == 'Accepted') {
             filteredGuests = guestsRSVPYes;
-          } else if (dropdownValue == 'Declined Invitations') {
+          } else if (dropdownValue == 'Declined') {
             filteredGuests = guestsRSVPNo;
           }
         });
-      } else {
-        print("Failed to fetch event details or guests RSVP");
       }
     } catch (error) {
-      print('Error: $error');
+      return Dialogs.materialDialog(
+        context: context,
+        title: 'Failed to fetch event details or guests RSVP',
+        lottieBuilder:
+            Lottie.asset('assets/animations/error.json', fit: BoxFit.contain),
+        titleAlign: TextAlign.center,
+        msg: 'Please try again later',
+        msgAlign: TextAlign.center,
+        msgStyle: GoogleFonts.poppins(
+          fontSize: 16.0,
+          fontStyle: FontStyle.italic,
+          fontWeight: FontWeight.w500,
+          color: const Color(0xFF000000),
+        ),
+        color: const Color(0xFFF8F7F2),
+        titleStyle: GoogleFonts.poppins(
+          fontSize: 20.0,
+          fontWeight: FontWeight.w600,
+          color: const Color(0xFF000000),
+        ),
+        actions: [
+          PushableButton(
+            onPressed: () {
+              Navigator.pop(context);
+            },
+            hslColor: HSLColor.fromColor(const Color(0xFF888789)),
+            shadow: const BoxShadow(
+              color: Color(0xFF505457),
+            ),
+            height: 50,
+            elevation: 8,
+            child: Text(
+              'Try Again',
+              style: GoogleFonts.poppins(
+                fontSize: 16,
+                fontWeight: FontWeight.w700,
+                color: const Color(0xFFF8F7F2),
+              ),
+            ),
+          ),
+        ],
+      );
     }
   }
 
@@ -157,27 +195,24 @@ class _GuestRSVPPageState extends State<GuestRSVPPage> {
                   ),
                 ],
               ),
-              SizedBox(height: 20),
+              const SizedBox(height: 20),
               DropdownButton<String>(
                 value: dropdownValue,
                 onChanged: (String? newValue) {
                   setState(() {
                     dropdownValue = newValue!;
                     // Filter guests based on the new dropdown value
-                    if (dropdownValue == 'All') {
+                    if (dropdownValue == 'Invited') {
                       filteredGuests = guestsRSVPYes + guestsRSVPNo;
-                    } else if (dropdownValue == 'Accepted Invitations') {
+                    } else if (dropdownValue == 'Accepted') {
                       filteredGuests = guestsRSVPYes;
-                    } else if (dropdownValue == 'Declined Invitations') {
+                    } else if (dropdownValue == 'Declined') {
                       filteredGuests = guestsRSVPNo;
                     }
                   });
                 },
-                items: <String>[
-                  'All',
-                  'Accepted Invitations',
-                  'Declined Invitations'
-                ].map<DropdownMenuItem<String>>((String value) {
+                items: <String>['Invited', 'Accepted', 'Declined']
+                    .map<DropdownMenuItem<String>>((String value) {
                   return DropdownMenuItem<String>(
                     value: value,
                     child: Text(value),
@@ -195,14 +230,14 @@ class _GuestRSVPPageState extends State<GuestRSVPPage> {
                   color: const Color(0xFFB3AE99),
                 ),
               ),
-              SizedBox(height: 20),
+              const SizedBox(height: 20),
               Expanded(
                 child: ListView.builder(
                   itemCount: filteredGuests.length,
                   itemBuilder: (context, index) {
                     final guestEmail = filteredGuests[index];
                     return Container(
-                      margin: EdgeInsets.only(bottom: 10),
+                      margin: const EdgeInsets.only(bottom: 10),
                       decoration: BoxDecoration(
                         color: const Color(0xFFB3AE99),
                         borderRadius: BorderRadius.circular(10),
